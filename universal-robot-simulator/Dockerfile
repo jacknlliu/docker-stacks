@@ -1,0 +1,65 @@
+FROM ubuntu:14.04
+
+MAINTAINER Jack Liu <jacknlliu@gmail.com>
+
+# setup environment
+ENV DEBIAN_FRONTEND noninteractive
+
+# setup locale
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+
+# install system packages
+RUN apt-get update -y && apt-get upgrade -y -q --no-install-recommends -o Dpkg::Options::="--force-confold" \
+    && apt-get install -y -q --no-install-recommends apt-transport-https aptitude
+
+# install essential tools
+RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth openssh-server runit sudo software-properties-common python-software-properties debconf-utils policykit-1  \
+    \
+# setup ssh
+    && mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config  \
+    \
+# install URSim  prerequisite
+    aptitude install -y -q -R openjdk-6-jre  openjdk-6-jdk \
+    && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/environment \
+    && source /etc/environment
+
+# install intel graphics driver
+RUN aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
+    \
+# install amd graphics open source driver
+    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils \
+    \
+# we should fix AMD graphics driver with image driver extension not found in ubuntu 14.04.2, refrence: https://wiki.ubuntu.com/Kernel/LTSEnablementStack#Ubuntu_14.04_LTS_-_Trusty_Tahr
+    && aptitude install -y -q -R linux-generic-lts-xenial xserver-xorg-core-lts-xenial xserver-xorg-lts-xenial xserver-xorg-video-all-lts-xenial xserver-xorg-input-all-lts-xenial libwayland-egl1-mesa-lts-xenial
+
+# set user ros and sudo
+RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
+    && usermod -a -G dialout ursim \
+    && echo "ursim ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99_aptget
+
+# install ursim
+COPY scripts/install_ursim.sh /home/ursim/
+RUN  /home/ursim/install_ursim.sh "/home/ursim/"  "ursim"
+
+COPY scripts/my_init   /sbin/my_init
+RUN chmod +x /sbin/my_init
+
+# aptitude clean
+RUN aptitude clean -y -q \
+    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
+    && rm -rf /var/lib/apt/lists/*
+
+# redefine env for my_init
+RUN echo "/home/ursim" > /etc/container_environment/HOME \
+    && echo "ursim"  > /etc/container_environment/USER
+
+# switch to user ursim, but the HOME is still /, not /home/ursim
+USER ursim
+
+# setup env
+RUN echo "export QT_X11_NO_MITSHM=1" >> /home/ursim/.bashrc && \
+echo "export HOME=/home/ursim" >> /home/ursim/.bashrc
+
+CMD ["bash", "-c", "/home/ursim/ursimpkg/start-ursim.sh"]
+ENTRYPOINT ["/sbin/my_init", "--"]
