@@ -23,6 +23,8 @@ RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth ope
     aptitude install -y -q -R openjdk-6-jre  openjdk-6-jdk \
     && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/environment
 
+ENV JAVA_HOME /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java
+
 # install intel graphics driver
 RUN aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
     \
