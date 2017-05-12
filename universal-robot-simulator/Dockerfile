@@ -21,8 +21,7 @@ RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth ope
     \
 # install URSim  prerequisite
     aptitude install -y -q -R openjdk-6-jre  openjdk-6-jdk \
-    && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/environment \
-    && source /etc/environment
+    && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/environment
 
 # install intel graphics driver
 RUN aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
@@ -52,7 +51,8 @@ RUN aptitude clean -y -q \
 
 # redefine env for my_init
 RUN echo "/home/ursim" > /etc/container_environment/HOME \
-    && echo "ursim"  > /etc/container_environment/USER
+    && echo "ursim"  > /etc/container_environment/USER  \
+    && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME
 
 # switch to user ursim, but the HOME is still /, not /home/ursim
 USER ursim
