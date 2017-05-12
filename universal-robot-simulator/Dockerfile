@@ -14,7 +14,7 @@ RUN apt-get update -y && apt-get upgrade -y -q --no-install-recommends -o Dpkg::
     && apt-get install -y -q --no-install-recommends apt-transport-https aptitude
 
 # install essential tools
-RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth openssh-server runit sudo software-properties-common python-software-properties debconf-utils policykit-1  \
+RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth openssh-server runit sudo software-properties-common python-software-properties debconf-utils policykit-1  xterm \
     \
 # setup ssh
     && mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config  \

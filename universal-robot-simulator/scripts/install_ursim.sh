@@ -15,4 +15,4 @@ cd $INSTALL_DIR && wget -O ursim.tar.gz ${UR_DOWNLOAD_SITE} && tar -xvzf ursim.t
 && sed -i "s/apt-get -y install/aptitude -y -q -R/g" ./install.sh \
 && ./install.sh \
 && rm -f ../ursim.tar.gz \
-&& cd .. && chmod -R $URSIM_USER:$URSIM_USER ursimpkg
+&& cd .. && chown -R $URSIM_USER:$URSIM_USER ursimpkg
