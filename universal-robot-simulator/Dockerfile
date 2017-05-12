@@ -37,11 +37,12 @@ RUN aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
 # set user ros and sudo
 RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
     && usermod -a -G dialout ursim \
-    && echo "ursim ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99_aptget
+    && echo "ursim ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99_aptget \
+    && mkdir -p /opt/ursim
 
 # install ursim
-COPY scripts/install_ursim.sh /home/ursim/
-RUN chmod +x /home/ursim/install_ursim.sh && /home/ursim/install_ursim.sh "/home/ursim/"  "ursim"
+COPY scripts/install_ursim.sh /opt/ursim/
+RUN chmod +x /opt/ursim/install_ursim.sh && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"
 
 COPY scripts/my_init   /sbin/my_init
 RUN chmod +x /sbin/my_init
@@ -65,5 +66,5 @@ echo "export HOME=/home/ursim" >> /home/ursim/.bashrc
 
 WORKDIR /home/ursim
 
-CMD ["bash", "-c", "/home/ursim/ursimpkg/start-ursim.sh"]
+CMD ["bash", "-c", "/opt/ursim/ursimpkg/start-ursim.sh"]
 ENTRYPOINT ["/sbin/my_init", "--"]
