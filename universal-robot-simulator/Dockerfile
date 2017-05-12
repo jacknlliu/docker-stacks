@@ -52,7 +52,7 @@ RUN aptitude clean -y -q \
     && rm -rf /var/lib/apt/lists/*
 
 # redefine env for my_init
-RUN echo "/home/ursim" > /etc/container_environment/HOME \
+RUN mkdir -p /etc/container_environment && echo "/home/ursim" > /etc/container_environment/HOME \
     && echo "ursim"  > /etc/container_environment/USER  \
     && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME
 
