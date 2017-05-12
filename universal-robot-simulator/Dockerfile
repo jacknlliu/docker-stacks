@@ -63,5 +63,7 @@ USER ursim
 RUN echo "export QT_X11_NO_MITSHM=1" >> /home/ursim/.bashrc && \
 echo "export HOME=/home/ursim" >> /home/ursim/.bashrc
 
+WORKDIR /home/ursim
+
 CMD ["bash", "-c", "/home/ursim/ursimpkg/start-ursim.sh"]
 ENTRYPOINT ["/sbin/my_init", "--"]
