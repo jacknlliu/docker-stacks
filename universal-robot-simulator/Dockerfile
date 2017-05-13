@@ -52,6 +52,8 @@ RUN aptitude clean -y -q \
     && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
     && rm -rf /var/lib/apt/lists/*
 
+ENV PATH /opt/ursim/ursimpkg:$PATH
+
 # redefine env for my_init
 RUN mkdir -p /etc/container_environment && echo "/home/ursim" > /etc/container_environment/HOME \
     && echo "ursim"  > /etc/container_environment/USER  \
