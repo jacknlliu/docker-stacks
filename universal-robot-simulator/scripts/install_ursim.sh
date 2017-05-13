@@ -6,10 +6,10 @@ set -e \
     && export URSIM_USER=$2  \
     && echo "INSTALL_DIR: $INSTALL_DIR \n URSIM_USER: $URSIM_USER" \
     \
-# install ursim
+    && echo "install ursim" > /dev/null \
     && cd $INSTALL_DIR && wget -O ursim.tar.gz ${UR_DOWNLOAD_SITE} && tar -xvzf ursim.tar.gz && cd ursim-${URSIMVERSION} \
     \
-# delete 36-37 lines for no xterm exit
+    && echo "delete 36-37 lines for no xterm exit" > /dev/null \
     && sed -i '36,37d' ./install.sh \
     && sed -i 's/pkexec bash -c/bash -c/g' ./install.sh \
     && sed -i 's/apt-get -y install/aptitude -y -q -R/g' ./install.sh \
