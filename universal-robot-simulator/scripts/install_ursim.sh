@@ -10,10 +10,11 @@ set -e \
     && cd $INSTALL_DIR && wget -O ursim.tar.gz ${UR_DOWNLOAD_SITE} && tar -xvzf ursim.tar.gz && cd ursim-${URSIMVERSION} \
     \
     && echo "delete 36-37 lines for no xterm exit" > /dev/null \
-    && sed -i '36,37d' ./install.sh \
+    && sed -i '36,37c echo \" ignore xterm \" ' ./install.sh \
     && sed -i 's/pkexec bash -c/bash -c/g' ./install.sh \
     && sed -i 's/apt-get -y install/aptitude -y -q -R/g' ./install.sh \
+    && sed -i ''  ./install.sh \
     && ./install.sh \
     && cd .. && rm -f ./ursim.tar.gz \
-    && mv ursim-${URSIMVERSION} ursimpkg
+    && mv ursim-${URSIMVERSION} ursimpkg \
     && chown -R $URSIM_USER:$URSIM_USER ursimpkg
