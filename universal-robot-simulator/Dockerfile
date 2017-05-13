@@ -10,7 +10,7 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
 # install system packages
-RUN apt-get update -y && apt-get upgrade -y -q --no-install-recommends -o Dpkg::Options::="--force-confold" \
+RUN apt-get update -y \
     && apt-get install -y -q --no-install-recommends apt-transport-https aptitude
 
 # install essential tools
@@ -42,7 +42,7 @@ RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
 
 # install ursim
 COPY scripts/install_ursim.sh /opt/ursim/
-RUN chmod +x /opt/ursim/install_ursim.sh && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"
+RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rx /opt/ursim
 
 COPY scripts/my_init   /sbin/my_init
 RUN chmod +x /sbin/my_init
@@ -55,7 +55,12 @@ RUN aptitude clean -y -q \
 # redefine env for my_init
 RUN mkdir -p /etc/container_environment && echo "/home/ursim" > /etc/container_environment/HOME \
     && echo "ursim"  > /etc/container_environment/USER  \
-    && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME
+    && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME \
+    && echo "PATH=\"/opt/ursim/ursimpkg:$PATH\"" >> /etc/container_environment/PATH
+
+
+# /sbin/my_init should be launched by root user
+ENTRYPOINT ["/sbin/my_init", "--"]
 
 # switch to user ursim, but the HOME is still /, not /home/ursim
 USER ursim
@@ -67,4 +72,3 @@ echo "export HOME=/home/ursim" >> /home/ursim/.bashrc
 WORKDIR /home/ursim
 
 CMD ["bash", "-c", "/opt/ursim/ursimpkg/start-ursim.sh"]
-ENTRYPOINT ["/sbin/my_init", "--"]
