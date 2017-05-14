@@ -13,11 +13,10 @@ set -e \
     && sed -i '36,37c \\t echo \"just ignore xterm warning\" ' ./install.sh \
     && sed -i 's/pkexec bash -c/bash -c/g' ./install.sh \
     && sed -i 's/apt-get -y install/apt-get -y install -q --no-install-recommends/g' ./install.sh \
-    && sed -i '64,75d' ./install.sh  \
-    && sed -i '65c cd $URSIM_ROOT/lib' ./install.sh \
-    && sed -i '68d' ./install.sh \
+    && sed -i '64,$d' ./install.sh  \
     && echo "echo \" installation done! \""  >> ./install.sh \
     && ./install.sh \
     && cd .. && rm -f ./ursim.tar.gz \
     && mv ursim-${URSIMVERSION} ursimpkg \
     && chown -R $URSIM_USER:$URSIM_USER ursimpkg
+    && chmod a+rx  ursimpkg/URControl
