@@ -16,7 +16,7 @@ set -e \
     && sed -i '64,75d' ./install.sh  \
     && sed -i '26a \ echo \"debug: in function installDaemonManager() \"' ./install.sh \
     && sed -i '65a echo \"debug: before pushd, after installDaemonManager\"' ./install.sh \
-    && sed -i '66a echo \"debug: after pushd\"' ./install.sh  \
+    && sed -i '67a echo \"debug: after pushd\"' ./install.sh  \
     && echo "echo \" installation done! \""  >> ./install.sh \
     && ./install.sh \
     && cd .. && rm -f ./ursim.tar.gz \
