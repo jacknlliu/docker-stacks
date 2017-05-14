@@ -55,8 +55,7 @@ RUN aptitude clean -y -q \
 ENV PATH /opt/ursim/ursimpkg:$PATH
 
 # redefine env for my_init
-RUN mkdir -p /etc/container_environment && echo "/home/ursim" > /etc/container_environment/HOME \
-    && echo "ursim"  > /etc/container_environment/USER  \
+RUN mkdir -p /etc/container_environment \
     && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME \
     && echo "PATH=\"/opt/ursim/ursimpkg:$PATH\"" >> /etc/container_environment/PATH
 
