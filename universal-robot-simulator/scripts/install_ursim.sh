@@ -14,6 +14,8 @@ set -e \
     && sed -i 's/pkexec bash -c/bash -c/g' ./install.sh \
     && sed -i 's/apt-get -y install/apt-get -y install -q --no-install-recommends/g' ./install.sh \
     && sed -i '64,75d' ./install.sh  \
+    && sed -i '26a \ echo \"debug: in function installDaemonManager() \"' ./install.sh \
+    && sed -i '66a echo \"debug: after pushd\"' ./install.sh  \
     && echo "echo \" installation done! \""  >> ./install.sh \
     && ./install.sh \
     && cd .. && rm -f ./ursim.tar.gz \
