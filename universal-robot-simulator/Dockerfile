@@ -73,4 +73,4 @@ echo "export HOME=/home/ursim" >> /home/ursim/.bashrc
 
 WORKDIR /home/ursim
 
-CMD ["bash", "-c", "/opt/ursim/ursimpkg/start-ursim.sh"]
+CMD ["bash", "-c", "/opt/ursim/ursimpkg/start-ursim.sh UR5"]
