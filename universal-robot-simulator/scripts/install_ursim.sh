@@ -18,5 +18,5 @@ set -e \
     && ./install.sh \
     && cd .. && rm -f ./ursim.tar.gz \
     && mv ursim-${URSIMVERSION} ursimpkg \
-    && chown -R $URSIM_USER:$URSIM_USER ursimpkg
+    && chown -R $URSIM_USER:$URSIM_USER ursimpkg \
     && chmod a+rx  ursimpkg/URControl
