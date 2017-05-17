@@ -14,7 +14,7 @@ RUN apt-get update -y \
     && apt-get install -y -q --no-install-recommends apt-transport-https aptitude
 
 # install essential tools
-RUN aptitude install -y -q -R  dumb-init bash-completion wget vim git terminator xauth openssh-server runit sudo software-properties-common python-software-properties debconf-utils policykit-1  xterm \
+RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth openssh-server runit sudo software-properties-common python-software-properties debconf-utils policykit-1  xterm \
     \
 # setup ssh
     && mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config  \
@@ -42,7 +42,10 @@ RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
 
 # install ursim
 COPY scripts/install_ursim.sh /opt/ursim/
-RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rx /opt/ursim
+RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rwx /opt/ursim
+
+COPY scripts/my_init   /sbin/my_init
+RUN chmod +x /sbin/my_init
 
 # aptitude clean
 RUN aptitude clean -y -q \
@@ -51,15 +54,14 @@ RUN aptitude clean -y -q \
 
 ENV PATH /opt/ursim/ursimpkg:$PATH
 
-# switch to user ursim, but the HOME is still /, not /home/ursim
-USER ursim
+# redefine env for my_init
+RUN mkdir -p /etc/container_environment \
+    && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME \
+    && echo "PATH=\"/opt/ursim/ursimpkg:$PATH\"" >> /etc/container_environment/PATH
 
-# setup env
-RUN echo "export QT_X11_NO_MITSHM=1" >> /home/ursim/.bashrc && \
-echo "export HOME=/home/ursim" >> /home/ursim/.bashrc
+WORKDIR /opt/ursim/ursimpkg
 
-WORKDIR /home/ursim
-
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-
-CMD ["bash", "-c", "/opt/ursim/ursimpkg/start-ursim.sh UR5"]
+USER root
+# /sbin/my_init should be launched by root user
+ENTRYPOINT ["/sbin/my_init", "--", "setuser", "ursim"]
+CMD ["bash"]

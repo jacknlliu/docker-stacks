@@ -7,7 +7,7 @@ set -e \
     && echo "INSTALL_DIR: $INSTALL_DIR \n URSIM_USER: $URSIM_USER" \
     \
     && echo "install ursim" > /dev/null \
-    && cd $INSTALL_DIR && wget -q -O ursim.tar.gz ${UR_DOWNLOAD_SITE} && tar -xvzf ursim.tar.gz && cd ursim-${URSIMVERSION} \
+    && cd $INSTALL_DIR && wget -q -O ursim.tar.gz ${UR_DOWNLOAD_SITE} && tar -xvzf ursim.tar.gz && mv ursim-${URSIMVERSION} ursimpkg && cd ursimpkg \
     \
     && echo "delete 36-37 lines for no xterm exit" > /dev/null \
     && sed -i '36,37c \\t echo \"just ignore xterm warning\" ' ./install.sh \
@@ -17,6 +17,5 @@ set -e \
     && echo "echo \" installation done! \""  >> ./install.sh \
     && ./install.sh \
     && cd .. && rm -f ./ursim.tar.gz \
-    && mv ursim-${URSIMVERSION} ursimpkg \
     && chown -R $URSIM_USER:$URSIM_USER ursimpkg \
     && chmod a+rx  ursimpkg/URControl
