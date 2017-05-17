@@ -42,7 +42,7 @@ RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
 
 # install ursim
 COPY scripts/install_ursim.sh /opt/ursim/
-RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rx /opt/ursim
+RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rwx /opt/ursim
 
 COPY scripts/my_init   /sbin/my_init
 RUN chmod +x /sbin/my_init
@@ -59,17 +59,9 @@ RUN mkdir -p /etc/container_environment \
     && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME \
     && echo "PATH=\"/opt/ursim/ursimpkg:$PATH\"" >> /etc/container_environment/PATH
 
+WORKDIR /opt/ursim/ursimpkg
 
+USER root
 # /sbin/my_init should be launched by root user
-ENTRYPOINT ["/sbin/my_init", "--"]
-
-# switch to user ursim, but the HOME is still /, not /home/ursim
-USER ursim
-
-# setup env
-RUN echo "export QT_X11_NO_MITSHM=1" >> /home/ursim/.bashrc && \
-echo "export HOME=/home/ursim" >> /home/ursim/.bashrc
-
-WORKDIR /home/ursim
-
-CMD ["bash", "-c", "/opt/ursim/ursimpkg/start-ursim.sh UR5"]
+ENTRYPOINT ["/sbin/my_init", "--", "setuser", "ursim"]
+CMD ["bash"]
