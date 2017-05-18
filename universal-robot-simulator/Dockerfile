@@ -45,7 +45,8 @@ COPY scripts/install_ursim.sh /opt/ursim/
 RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rwx /opt/ursim
 
 COPY scripts/my_init   /sbin/my_init
-RUN chmod +x /sbin/my_init
+COPY scripts/setuser /sbin/setuser
+RUN chmod +x /sbin/my_init && chmod +x /sbin/setuser
 
 # aptitude clean
 RUN aptitude clean -y -q \
@@ -59,9 +60,8 @@ RUN mkdir -p /etc/container_environment \
     && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/container_environment/JAVA_HOME \
     && echo "PATH=\"/opt/ursim/ursimpkg:$PATH\"" >> /etc/container_environment/PATH
 
-WORKDIR /opt/ursim/ursimpkg
-
 USER root
+WORKDIR /opt/ursim/ursimpkg
 # /sbin/my_init should be launched by root user
 ENTRYPOINT ["/sbin/my_init", "--", "setuser", "ursim"]
 CMD ["bash"]
