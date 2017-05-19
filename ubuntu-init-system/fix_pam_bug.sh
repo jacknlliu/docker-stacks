@@ -16,6 +16,7 @@ gdebi -n libpam-doc*.deb libpam-modules*.deb libpam-runtime*.deb libpam0g*.deb
 rm -rf *.deb *.gz *.dsc *.changes pam-*
 
 # Unfortunately there is no way to automatically remove build deps, so we do this manually.
+apt-get remove -y gdebi-core autoconf automake autopoint autotools-dev binutils  build-essential bzip2 cpp cpp-4.* g++ g++-4.* gcc gcc-4.*
 # apt-get remove -y gdebi-core autoconf automake autopoint autotools-dev binutils bsdmainutils \
 # 	build-essential bzip2 cpp cpp-4.* debhelper dh-autoreconf \
 # 	diffstat docbook-xml docbook-xsl dpkg-dev flex g++ g++-4.* gcc gcc-4.* gettext gettext-base \
@@ -29,5 +30,4 @@ rm -rf *.deb *.gz *.dsc *.changes pam-*
 # 	libxslt1.1 linux-libc-dev m4 make man-db patch perl perl-modules pkg-config \
 # 	po-debconf quilt sgml-base sgml-data w3m xml-core xsltproc xz-utils
 
-apt-get remove -y gdebi-core
 apt-get autoremove -y
