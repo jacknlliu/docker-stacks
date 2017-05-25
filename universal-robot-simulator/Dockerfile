@@ -20,7 +20,7 @@ RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth ope
     && mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config  \
     \
 # install URSim  prerequisite
-    && aptitude install -y -q -R openjdk-6-jre  openjdk-6-jdk \
+    && aptitude install -y -q -R openjdk-6-jre  openjdk-6-jdk libxmlrpc-c++8 libxmlrpc-core-c3 \
     && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/environment
 
 ENV JAVA_HOME /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java
