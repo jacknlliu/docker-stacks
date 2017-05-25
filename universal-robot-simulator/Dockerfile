@@ -29,10 +29,10 @@ ENV JAVA_HOME /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java
 RUN aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
     \
 # install amd graphics open source driver
-    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils \
-    \
+    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils
+
 # we should fix AMD graphics driver with image driver extension not found in ubuntu 14.04.2, refrence: https://wiki.ubuntu.com/Kernel/LTSEnablementStack#Ubuntu_14.04_LTS_-_Trusty_Tahr
-    && aptitude install -y -q -R linux-generic-lts-xenial xserver-xorg-core-lts-xenial xserver-xorg-lts-xenial xserver-xorg-video-all-lts-xenial xserver-xorg-input-all-lts-xenial libwayland-egl1-mesa-lts-xenial
+# && aptitude install -y -q -R linux-generic-lts-xenial xserver-xorg-core-lts-xenial xserver-xorg-lts-xenial xserver-xorg-video-all-lts-xenial xserver-xorg-input-all-lts-xenial libwayland-egl1-mesa-lts-xenial
 
 # set user ros and sudo
 RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
