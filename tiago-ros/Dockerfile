@@ -1,4 +1,4 @@
-FROM jacknlliu/ubuntu-init:14.04
+FROM jacknlliu/ubuntu-init:14.04.5
 
 MAINTAINER Jack Liu <jacknlliu@gmail.com>
 
@@ -18,7 +18,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc
     \
 # update the repository and install ros packages
     && apt-get update -y \
-    && apt-get upgrade -y -q --no-install-recommends \
+    && apt-get upgrade -y -q --no-install-recommends -o Dpkg::Options::="--force-confold" \
     && apt-get install -y -q --no-install-recommends apt-utils apt-transport-https aptitude \
     && aptitude install -y -q -R ros-indigo-desktop-full python-rosinstall \
     && rosdep init
@@ -46,10 +46,7 @@ RUN aptitude install -y -q -R  bash-completion wget vim git terminator superviso
 RUN aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
     \
 # install amd graphics open source driver
-    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils \
-    \
-# we should fix AMD graphics driver with image driver extension not found in ubuntu 14.04.2, refrence: https://wiki.ubuntu.com/Kernel/LTSEnablementStack#Ubuntu_14.04_LTS_-_Trusty_Tahr
-    && aptitude install -y -q -R linux-generic-lts-xenial xserver-xorg-core-lts-xenial xserver-xorg-lts-xenial xserver-xorg-video-all-lts-xenial xserver-xorg-input-all-lts-xenial libwayland-egl1-mesa-lts-xenial
+    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils
 
 # install ros related components
 RUN aptitude install -y -q -R ros-indigo-moveit-full \
