@@ -115,7 +115,7 @@ RUN aptitude install -y -q -R software-properties-common \
     && cd /home/ros/Workspace/tiago_public_ws \
     && wget -O tiago_public.rosinstall https://raw.githubusercontent.com/pal-robotics/tiago_tutorials/master/tiago_public.rosinstall \
     && yes | rosinstall src /opt/ros/indigo tiago_public.rosinstall \
-    && rosdep init && rosdep update \
+    && rosdep update \
     && yes | rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && chown -R ros:ros /home/ros/Workspace
 
