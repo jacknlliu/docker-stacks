@@ -10,6 +10,13 @@ ENV ROS_DISTRO indigo
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
+# install tiago dependencies
+RUN  apt-get update -y && apt-get upgrade -y -q --no-install-recommends -o Dpkg::Options::="--force-confold" \
+    && apt-get install -y -q --no-install-recommends software-properties-common \
+    && add-apt-repository --yes ppa:xqms/opencv-nonfree  \
+    && apt-get update -y -q \
+    && apt-get install -y -q --no-install-recommends libopencv-nonfree-dev
+
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list \
     \
@@ -18,7 +25,6 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc
     \
 # update the repository and install ros packages
     && apt-get update -y \
-    && apt-get upgrade -y -q --no-install-recommends -o Dpkg::Options::="--force-confold" \
     && apt-get install -y -q --no-install-recommends apt-utils apt-transport-https aptitude \
     && aptitude install -y -q -R ros-indigo-desktop-full python-rosinstall \
     && rosdep init
@@ -58,6 +64,12 @@ RUN aptitude install -y -q -R ros-indigo-moveit-full \
     ros-indigo-camera-calibration \
     ros-indigo-camera-calibration-parsers \
     ros-indigo-camera-info-manager \
+    ros-indigo-twist-mux ros-indigo-joy ros-indigo-joy-teleop \
+    ros-indigo-teleop-tools ros-indigo-control-toolbox ros-indigo-sound-play \
+    ros-indigo-navigation ros-indigo-eband-local-planner \
+    ros-indigo-depthimage-to-laserscan  ros-indigo-openslam-gmapping \
+    ros-indigo-gmapping ros-indigo-moveit-commander \
+    ros-indigo-geometry-experimental \
     \
 # install orocos rtt components
     && aptitude install -y -q -R ros-indigo-orocos-kdl ros-indigo-rtt ~nros-indigo-rtt-*
@@ -103,11 +115,7 @@ RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:ros /home/ros/.gazebo
 VOLUME ["/home/ros/.gazebo/models"]
 
 # install tiago sdk
-RUN aptitude install -y -q -R software-properties-common \
-    && add-apt-repository --yes ppa:xqms/opencv-nonfree  \
-    && aptitude update -y -q \
-    && aptitude install -y -q -R libopencv-nonfree-dev \
-    && mkdir -p /home/ros/Workspace/tiago_public_ws/src \
+RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && chmod -R a+rwx /home/ros/Workspace/tiago_public_ws \
     && cd /home/ros/Workspace/tiago_public_ws \
     && wget -O tiago_public.rosinstall https://raw.githubusercontent.com/pal-robotics/tiago_tutorials/master/tiago_public.rosinstall \
