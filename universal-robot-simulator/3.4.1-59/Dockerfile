@@ -1,4 +1,4 @@
-FROM jacknlliu/ubuntu-init:14.04
+FROM ubuntu:14.04
 
 MAINTAINER Jack Liu <jacknlliu@gmail.com>
 
@@ -43,6 +43,10 @@ RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
 # install ursim
 COPY scripts/install_ursim.sh /opt/ursim/
 RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rwx /opt/ursim
+
+COPY scripts/my_init   /sbin/my_init
+COPY scripts/setuser /sbin/setuser
+RUN chmod +x /sbin/my_init && chmod +x /sbin/setuser
 
 # aptitude clean
 RUN aptitude clean -y -q \
