@@ -13,8 +13,7 @@ set -e \
     && sed -i '6,10c  echo \"just ignore terminal warning\" ' ./install.sh \
     && sed -i 's/pkexec bash -c/bash -c/g' ./install.sh \
     && sed -i 's/apt-get -y install/apt-get -y install -q --no-install-recommends/g' ./install.sh \
-    && sed -i '27,40d' ./install.sh  \
-    && sed -i '29d' ./install.sh  \
+    && sed -i '27,$d' ./install.sh  \
     && echo "echo \" installation done! \""  >> ./install.sh \
     && ./install.sh \
     && cd .. && rm -f ./ursim.tar.gz \
