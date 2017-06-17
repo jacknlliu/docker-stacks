@@ -26,7 +26,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc
 # update the repository and install ros packages
     && apt-get update -y \
     && apt-get install -y -q --no-install-recommends apt-utils apt-transport-https aptitude \
-    && aptitude install -y -q -R ros-indigo-desktop-full python-rosinstall \
+    && aptitude install -y -q -R ros-indigo-desktop-full python-rosinstall ninja-build \
     && rosdep init
 
 # install additional system packages and ros packages
