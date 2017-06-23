@@ -21,7 +21,7 @@ RUN aptitude install -y -q -R  bash-completion wget vim git terminator xauth ope
     \
 # install URSim  prerequisite
     && dpkg --add-architecture i386 && aptitude update -y \
-    && aptitude install -y -q -R openjdk-6-jre  openjdk-6-jdk libxmlrpc-c++8 libxmlrpc-c++8:i386 libxmlrpc-core-c3 \
+    && aptitude install -y -q -R openjdk-6-jre  openjdk-6-jdk libxmlrpc-c++8:i386 \
     && echo "JAVA_HOME=\"/usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java\"" >> /etc/environment
 
 ENV JAVA_HOME /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java
