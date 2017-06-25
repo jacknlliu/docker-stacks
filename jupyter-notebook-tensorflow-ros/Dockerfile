@@ -1,0 +1,86 @@
+FROM jupyter/tensorflow-notebook:latest
+
+MAINTAINER Jack Liu <jacknlliu@gmail.com>
+
+# setup environment
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update -y && apt-get install -y -q --no-install-recommends apt-transport-https aptitude locales && locale-gen en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+
+# define ros distribution version
+ENV ROS_DISTRO kinetic
+
+# setup sources.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu $(awk -F"[)(]+" '/VERSION=/ {print $2}' /etc/os-release) main" > /etc/apt/sources.list.d/ros-latest.list  \
+    \
+# setup keys
+    && apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116  \
+    \
+# update the repository and install ros kinetic
+    && aptitude update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build \
+    \
+# rosdep init
+    && rosdep init
+
+# install additional system packages and ros packages
+# install additional build tool
+RUN aptitude install -y -q -R build-essential gdb \
+    \
+# install IDE essential packages and qt5, qtcreator, qtdeclarative5-qtquick2
+    && aptitude install -y -q -R mesa-common-dev libglu1-mesa-dev libfontconfig1 qt5-default qtcreator qtdeclarative5-qtquick2-plugin \
+    \
+# install intel graphics driver
+    && aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
+    \
+# install amd graphics open source driver
+    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils
+
+# install RoboWare
+RUN aptitude install -y -q -R  wget python-pip pylint clang libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
+    && export ROBOWAREVERSION="0.6.0-1495845302"  \
+    && wget https://github.com/tonyrobotics/RoboWare/raw/master/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
+    && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
+    && rm -f roboware_amd64.deb
+
+# install essential tools, ssh sever, sudo
+RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim git iputils-ping terminator supervisor xauth openssh-server sudo pcmanfm
+
+# config sshd
+RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
+
+# copy supervisord.conf file
+COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# copy entrypoint file
+COPY ./scripts/ros_entrypoint.sh /
+
+# aptitude clean
+RUN aptitude clean -y -q \
+    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY ./scripts/containerinit.sh  /
+RUN chmod a+rwx /containerinit.sh
+
+# setup ros env
+USER jovyan
+RUN HOME=/home/jovyan rosdep update  \
+    && echo "source "/opt/ros/$ROS_DISTRO/setup.bash"" >> /home/jovyan/.bashrc
+
+# configure Qt
+RUN mkdir -p /home/jovyan/.config/QtProject
+
+USER root
+COPY ./config/QtCreator.ini  /home/jovyan/.config/QtProject/
+RUN chown -R jovyan:jovyan  /home/jovyan/.config/QtProject/
+
+# config gazebo volume
+RUN mkdir -p /home/jovyan/.gazebo/models && chown -R jovyan:jovyan /home/jovyan/.gazebo
+
+USER jovyan
+WORKDIR /home/jovyan
+
+CMD ["bash"]
+ENTRYPOINT ["/ros_entrypoint.sh"]
