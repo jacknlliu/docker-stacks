@@ -76,10 +76,10 @@ RUN mkdir -p /home/jovyan/.config/QtProject
 
 USER root
 COPY ./config/QtCreator.ini  /home/jovyan/.config/QtProject/
-RUN chown -R jovyan:jovyan  /home/jovyan/.config/QtProject/
+RUN chown -R jovyan:users  /home/jovyan/.config/QtProject/
 
 # config gazebo volume
-RUN mkdir -p /home/jovyan/.gazebo/models && chown -R jovyan:jovyan /home/jovyan/.gazebo
+RUN mkdir -p /home/jovyan/.gazebo/models && chown -R jovyan:users /home/jovyan/.gazebo
 
 USER jovyan
 WORKDIR /home/jovyan
