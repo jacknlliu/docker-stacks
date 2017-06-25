@@ -2,6 +2,8 @@ FROM jupyter/tensorflow-notebook:latest
 
 MAINTAINER Jack Liu <jacknlliu@gmail.com>
 
+USER root
+
 # setup environment
 ENV DEBIAN_FRONTEND noninteractive
 
