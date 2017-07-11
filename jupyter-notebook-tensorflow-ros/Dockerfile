@@ -47,7 +47,7 @@ RUN aptitude install -y -q -R  wget python-pip pylint clang libnss3 libnotify4 l
     && rm -f roboware_amd64.deb
 
 # install essential tools, ssh sever, sudo
-RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim git iputils-ping terminator supervisor xauth openssh-server sudo pcmanfm
+RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim git iputils-ping iproute2 netcat terminator supervisor xauth openssh-server sudo pcmanfm
 
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
