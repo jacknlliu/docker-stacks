@@ -138,5 +138,5 @@ RUN aptitude clean -y -q \
 WORKDIR /home/ros
 
 # must run /sbin/my_init with root user
-ENTRYPOINT ["/sbin/my_init", "--", "setuser", "ros", "/ros_entrypoint.sh"]
+ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "setuser", "ros", "/ros_entrypoint.sh"]
 CMD ["bash"]

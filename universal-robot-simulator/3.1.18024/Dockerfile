@@ -59,5 +59,5 @@ RUN mkdir -p /etc/container_environment \
 USER root
 WORKDIR /opt/ursim/ursimpkg
 # /sbin/my_init should be launched by root user
-ENTRYPOINT ["/sbin/my_init", "--", "setuser", "ursim"]
+ENTRYPOINT ["/sbin/my_init", "--quiet", "--", "setuser", "ursim"]
 CMD ["bash"]
