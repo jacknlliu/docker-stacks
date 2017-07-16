@@ -81,8 +81,9 @@ RUN chown -R jovyan:users  /home/jovyan/.config/QtProject/
 # config gazebo volume
 RUN mkdir -p /home/jovyan/.gazebo/models && chown -R jovyan:users /home/jovyan/.gazebo
 
+# Configure container startup
+ENTRYPOINT ["tini", "--", "/ros_entrypoint.sh"]
+CMD ["start-notebook.sh"]
+
 USER jovyan
 WORKDIR /home/jovyan
-
-CMD ["bash"]
-ENTRYPOINT ["/ros_entrypoint.sh"]
