@@ -57,6 +57,7 @@ COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # copy entrypoint file
 COPY ./scripts/ros_entrypoint.sh /
+RUN chmod a+rwx /ros_entrypoint.sh
 
 # aptitude clean
 RUN aptitude clean -y -q \
