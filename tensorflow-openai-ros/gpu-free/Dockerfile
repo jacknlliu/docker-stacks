@@ -93,7 +93,11 @@ COPY ./config/QtCreator.ini  /home/ros/.config/QtProject/
 RUN chown -R ros:users  /home/ros/.config/QtProject/
 
 # config gazebo volume
-RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:users /home/ros/.gazebo
+RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:users /home/ros/.gazebo \
+    && mkdir /home/ros/.jupyter \
+    && cp -f /root/.jupyter/jupyter_notebook_config.py /home/ros/.jupyter/ \
+    && chown -R ros:users /home/ros/.jupyter \
+    && chmod 755 /home/ros/.jupyter/jupyter_notebook_config.py
 
 # Add Tini
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
