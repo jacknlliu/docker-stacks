@@ -57,7 +57,7 @@ RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim
 
 # install openai/baselines, roboschool, gym related python packages
 COPY ./scripts/roboschool_setup.sh /
-RUN chmod +x /roboschool_setup.sh && pip3 install --quiet --yes gym && \
+RUN chmod +x /roboschool_setup.sh && pip3 install --no-cache-dir gym && \
     /roboschool_setup.sh
 
 # config sshd

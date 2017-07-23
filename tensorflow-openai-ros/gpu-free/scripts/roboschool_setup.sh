@@ -18,6 +18,6 @@ cmake -DBUILD_SHARED_LIBS=ON -DUSE_DOUBLE_PRECISION=1 \
       -DBUILD_OPENGL3_DEMOS=OFF ..
 
 make -j4
-make install && cd /opt && pip3 install -e $ROBOSCHOOL_PATH
+make install && cd /opt && pip3 install --no-cache-dir -e $ROBOSCHOOL_PATH
 
 chmod a+rwx -R /opt/roboschool /opt/rllab
