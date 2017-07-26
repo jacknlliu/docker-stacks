@@ -54,7 +54,7 @@ RUN aptitude install -y -q -R  wget python-pip pylint clang libnss3 libnotify4 l
 RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim git iputils-ping iproute2 netcat terminator xauth openssh-server sudo pcmanfm
 
 # install machine learning packages
-RUN pip3 install --no-cache-dir -e git+https://github.com/AlexanderFabisch/gmr.git
+RUN pip3 install git+https://github.com/AlexanderFabisch/gmr.git
 
 # install openai/baselines, roboschool, gym related python packages
 COPY ./scripts/roboschool_setup.sh /

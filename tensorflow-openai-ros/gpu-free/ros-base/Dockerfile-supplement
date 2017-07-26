@@ -71,11 +71,11 @@ RUN aptitude install -y -q -R ros-kinetic-controller-manager \
     && aptitude install -y -q -R ros-kinetic-calibration-estimation ros-kinetic-kdl-parser-py  \
     \
 # install fast inverse kinematics module
-    && aptitude install -y -q -R ros-kinetic-katana-moveit-ikfast-plugin  ros-kinetic-trac-ik-lib ros-kinetic-trac-ik-kinematics-plugin \
+    && aptitude install -y -q -R ros-kinetic-katana-moveit-ikfast-plugin  ros-kinetic-trac-ik-lib ros-kinetic-trac-ik-kinematics-plugin
 
 
 # install machine learning packages
-RUN pip3 install --no-cache-dir -e git+https://github.com/AlexanderFabisch/gmr.git
+RUN pip3 install git+https://github.com/AlexanderFabisch/gmr.git
 
 
 # install openai/baselines, roboschool, gym related python packages
