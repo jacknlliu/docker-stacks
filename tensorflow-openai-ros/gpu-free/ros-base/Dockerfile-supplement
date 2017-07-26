@@ -75,6 +75,7 @@ RUN aptitude install -y -q -R ros-kinetic-controller-manager \
 
 
 # install machine learning packages
+RUN pip3 install --no-cache-dir -e git+https://github.com/AlexanderFabisch/gmr.git
 
 
 # install openai/baselines, roboschool, gym related python packages
