@@ -1,0 +1,140 @@
+FROM tensorflow/tensorflow:latest-gpu-py3
+
+MAINTAINER Jack Liu <jacknlliu@gmail.com>
+
+USER root
+
+# setup environment
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update -y && apt-get install -y -q --no-install-recommends apt-transport-https aptitude locales && locale-gen en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+
+# define tini version
+ENV TINI_VERSION v0.15.0
+
+# define ros distribution version
+ENV ROS_DISTRO kinetic
+
+
+# setup sources.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list  \
+   \
+# setup keys
+   && apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116  \
+   \
+# update the repository and install ros kinetic
+   && aptitude update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build python3-pip \
+   \
+# rosdep init
+   && rosdep init
+
+# install ros python3 support
+RUN pip3 install --no-cache-dir catkin-tools rospkg
+
+# install additional system packages and ros packages
+# install additional build tool
+RUN aptitude install -y -q -R build-essential gdb tmux \
+    \
+# install IDE essential packages and qt5, qtcreator, qtdeclarative5-qtquick2
+    && aptitude install -y -q -R mesa-common-dev libglu1-mesa-dev libfontconfig1 qt5-default qtcreator qtdeclarative5-qtquick2-plugin \
+    \
+# install intel graphics driver
+    && aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
+    \
+# install amd graphics open source driver
+    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils
+
+# install RoboWare
+RUN aptitude install -y -q -R  wget python-pip pylint clang libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
+    && export ROBOWAREVERSION="0.7.0-1498718847"  \
+    && wget https://github.com/tonyrobotics/RoboWare/raw/master/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
+    && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
+    && rm -f roboware_amd64.deb
+
+# install essential tools, ssh sever, sudo
+RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim git iputils-ping iproute2 netcat terminator xauth openssh-server sudo pcmanfm
+
+
+# install ros related components
+RUN aptitude install -y -q -R ros-kinetic-controller-manager \
+    ros-kinetic-tf  ros-kinetic-urdf \
+    ros-kinetic-ros-controllers \
+    ros-kinetic-hardware-interface \
+    ros-kinetic-orocos-kdl \
+    ros-kinetic-orocos-kinematics-dynamics \
+    ros-kinetic-pid  \
+    ros-kinetic-moveit \
+    \
+# install Barret_Hand related components
+    && aptitude install -y -q -R libignition-math2-dev libignition-common-dev  \
+    \
+# install kinematics module
+    && aptitude install -y -q -R ros-kinetic-calibration-estimation ros-kinetic-kdl-parser-py  \
+    \
+# install fast inverse kinematics module
+    && aptitude install -y -q -R ros-kinetic-katana-moveit-ikfast-plugin  ros-kinetic-trac-ik-lib ros-kinetic-trac-ik-kinematics-plugin
+
+
+# install machine learning packages
+RUN pip3 install git+https://github.com/AlexanderFabisch/gmr.git
+
+# install openai/baselines, roboschool, gym related python packages
+COPY ./scripts/roboschool_setup.sh ./config/requirements.txt /
+RUN chmod +x /roboschool_setup.sh /requirements.txt && pip3 install --no-cache-dir gym baselines && \
+    /roboschool_setup.sh
+
+# config sshd
+RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
+
+# copy entrypoint file
+COPY ./scripts/ros_entrypoint.sh ./scripts/containerinit.sh  /
+RUN chmod a+rwx /ros_entrypoint.sh  /containerinit.sh
+
+# aptitude clean
+RUN aptitude clean -y -q \
+    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# set user ros and sudo
+RUN adduser --gecos "ROS User" --home /home/ros --disabled-password ros && \
+    usermod -a -G dialout ros && \
+    echo "ros ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99_aptget
+
+# setup ros env
+USER ros
+RUN HOME=/home/ros rosdep update  \
+    && echo "source "/opt/ros/$ROS_DISTRO/setup.bash"" >> /home/ros/.bashrc
+
+# config alias for openai/rllab
+RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
+
+# configure Qt
+RUN mkdir -p /home/ros/.config/QtProject
+
+USER root
+COPY ./config/QtCreator.ini  /home/ros/.config/QtProject/
+RUN chown -R ros:users  /home/ros/.config/QtProject/
+
+# config env for openai/rllab
+ENV THEANO_FLAGS mode=FAST_RUN,device=cpu,floatX=float32
+
+# config gazebo volume
+RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:users /home/ros/.gazebo \
+    && mkdir /home/ros/.jupyter \
+    && cp -f /root/.jupyter/jupyter_notebook_config.py /home/ros/.jupyter/ \
+    && chown -R ros:users /home/ros/.jupyter \
+    && chmod 755 /home/ros/.jupyter/jupyter_notebook_config.py
+
+# Add Tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
+
+# Configure container startup
+ENTRYPOINT ["tini", "--", "/ros_entrypoint.sh"]
+CMD ["bash"]
+
+USER ros
+WORKDIR /home/ros
