@@ -21,7 +21,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu $(awk -F"[)(]+" '/VERSION=/ {pr
     && apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116  \
     \
 # update the repository and install ros kinetic
-    && aptitude update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build \
+    && aptitude update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build python3-pip python3-setuptools\
     \
 # rosdep init
     && rosdep init
