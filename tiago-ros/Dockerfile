@@ -113,7 +113,7 @@ RUN mkdir -p /home/ros/.config/QtProject
 USER root
 
 COPY ./config/QtCreator.ini  /home/ros/.config/QtProject/
-RUN chown -R ros:ros  /home/ros/.config/QtProject/
+RUN chown -R ros:ros  /home/ros/.config/
 
 # config gazebo volume
 RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:ros /home/ros/.gazebo
@@ -121,16 +121,19 @@ RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:ros /home/ros/.gazebo
 # share this volume with other containers from this image
 VOLUME ["/home/ros/.gazebo/models"]
 
+
+USER ros
 # install tiago sdk
 RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && chmod -R a+rwx /home/ros/Workspace/tiago_public_ws \
     && cd /home/ros/Workspace/tiago_public_ws \
     && wget -O tiago_public.rosinstall https://raw.githubusercontent.com/pal-robotics/tiago_tutorials/master/tiago_public.rosinstall \
-    && yes | rosinstall src /opt/ros/indigo tiago_public.rosinstall \
+    && yes | sudo -H rosinstall src /opt/ros/indigo tiago_public.rosinstall \
     && rosdep update \
-    && yes | rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
+    && yes | sudo -H rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && chown -R ros:ros /home/ros/Workspace
 
+USER root
 # aptitude clean
 RUN aptitude clean -y -q \
     && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
