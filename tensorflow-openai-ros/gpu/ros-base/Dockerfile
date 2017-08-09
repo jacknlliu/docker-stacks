@@ -57,24 +57,26 @@ RUN aptitude install -y -q -R  wget python-pip pylint clang libxss1 libnss3 libn
 RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim git iputils-ping iproute2 netcat terminator xauth openssh-server sudo pcmanfm
 
 # install machine learning packages
-RUN pip3 install git+https://github.com/AlexanderFabisch/gmr.git
+RUN mkdir -p /opt/scripts/container/ && chmod -R a+rx /opt/scripts/ \
+    && cd /opt/scripts/container/ && pip3 install git+https://github.com/AlexanderFabisch/gmr.git
 
+# copy entrypoint file
 # install openai/baselines, roboschool, gym related python packages
-COPY ./scripts/roboschool_setup.sh ./config/requirements.txt /
-RUN chmod +x /roboschool_setup.sh /requirements.txt && pip3 install --no-cache-dir gym baselines && \
-    /roboschool_setup.sh
+COPY ./scripts/*.sh ./config/requirements.txt  /opt/scripts/container/
+RUN chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/requirements.txt && pip3 install --no-cache-dir gym baselines && \
+    /opt/scripts/container/roboschool_setup.sh
 
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 
-# copy entrypoint file
-COPY ./scripts/ros_entrypoint.sh ./scripts/containerinit.sh  /
-RUN chmod a+rwx /ros_entrypoint.sh  /containerinit.sh
+RUN chmod a+rwx /opt/scripts/container/ros_entrypoint.sh /opt/scripts/container/containerinit.sh \
+    /opt/scripts/container/tensorflow-models.sh && /opt/scripts/container/tensorflow-models.sh
 
-# aptitude clean
+# aptitude clean and installation scripts clean
 RUN aptitude clean -y -q \
     && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /opt/scripts/container/tensorflow-models.sh /opt/scripts/container/roboschool_setup.sh
 
 
 # set user ros and sudo
@@ -85,7 +87,8 @@ RUN adduser --gecos "ROS User" --home /home/ros --disabled-password ros && \
 # setup ros env
 USER ros
 RUN HOME=/home/ros rosdep update  \
-    && echo "source "/opt/ros/$ROS_DISTRO/setup.bash"" >> /home/ros/.bashrc
+    && echo "source "/opt/ros/$ROS_DISTRO/setup.bash"" >> /home/ros/.bashrc \
+    && echo "export PYTHONPATH=$PYTHONPATH:/opt/tensorflow-models:/opt/tensorflow-models/slim" >> /home/ros/.bashrc
 
 # config alias for openai/rllab
 RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
@@ -112,7 +115,7 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/
 RUN chmod +x /usr/bin/tini
 
 # Configure container startup
-ENTRYPOINT ["tini", "--", "/ros_entrypoint.sh"]
+ENTRYPOINT ["tini", "--", "/opt/scripts/container/ros_entrypoint.sh"]
 CMD ["bash"]
 
 USER ros
