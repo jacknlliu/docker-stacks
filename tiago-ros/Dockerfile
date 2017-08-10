@@ -123,7 +123,7 @@ VOLUME ["/home/ros/.gazebo/models"]
 
 USER ros
 # install tiago sdk
-RUN echo "just for debug, show USER home: $HOME"
+RUN echo "just for debug, show $USER home: $HOME"
 RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && chmod -R a+rwx /home/ros/Workspace/tiago_public_ws \
     && cd /home/ros/Workspace/tiago_public_ws \
@@ -133,7 +133,7 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && echo "source ~/Workspace/tiago_public_ws/src/setup.bash" >> /home/ros/.bashrc \
     && rosdep update
 
-RUN echo "for debug, show USER home again: $HOME"
+RUN echo "for debug, show $USER home again: $HOME"
 RUN cd /home/ros/Workspace/tiago_public_ws && \
     && yes | sudo -H rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && chown -R ros:ros /home/ros/Workspace
