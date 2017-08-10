@@ -127,11 +127,13 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && chmod -R a+rwx /home/ros/Workspace/tiago_public_ws \
     && cd /home/ros/Workspace/tiago_public_ws \
     && wget -O tiago_public.rosinstall https://raw.githubusercontent.com/pal-robotics/tiago_tutorials/master/tiago_public.rosinstall \
-    && yes | sudo -H rosinstall src /opt/ros/indigo tiago_public.rosinstall \
+    && yes | rosinstall src /opt/ros/indigo tiago_public.rosinstall \
     && /bin/bash -c "source /home/ros/Workspace/tiago_public_ws/src/setup.bash" \
     && echo "source ~/Workspace/tiago_public_ws/src/setup.bash" >> /home/ros/.bashrc \
     && rosdep update \
     && yes | sudo rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
+    && /bin/bash -c "source /opt/ros/indigo/setup.bash" \
+    && catkin build
     && chown -R ros:ros /home/ros/Workspace
 
 USER root
