@@ -1,6 +1,6 @@
 FROM jacknlliu/ubuntu-init:14.04.5
 
-MAINTAINER Jack Liu <jacknlliu@gmail.com>
+LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 
 # setup environment
 ENV DEBIAN_FRONTEND noninteractive
@@ -129,7 +129,7 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && cd /home/ros/Workspace/tiago_public_ws \
     && wget -O tiago_public.rosinstall https://raw.githubusercontent.com/pal-robotics/tiago_tutorials/master/tiago_public.rosinstall \
     && yes | sudo -H rosinstall src /opt/ros/indigo tiago_public.rosinstall \
-    && . /home/ros/Workspace/tiago_public_ws/src/setup.bash \
+    && /bin/bash -c "source /home/ros/Workspace/tiago_public_ws/src/setup.bash" \
     && echo "source ~/Workspace/tiago_public_ws/src/setup.bash" >> /home/ros/.bashrc \
     && sudo rosdep init && rosdep update \
     && yes | sudo -H rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
