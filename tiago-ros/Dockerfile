@@ -99,11 +99,11 @@ RUN adduser --gecos "ROS User" --home /home/ros --disabled-password ros && \
     usermod -a -G dialout ros && \
     echo "ros ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99_aptget
 
-# switch to user ros, but the HOME is still /, not /home/ros
+# switch to user ros, but the workdir is still /, not /home/ros
 USER ros
 
 # setup ros env
-RUN HOME=/home/ros rosdep update  \
+RUN sudo rosdep init && rosdep update  \
     && echo "source "/opt/ros/$ROS_DISTRO/setup.bash"" >> /home/ros/.bashrc
 
 # configure Qt
@@ -130,7 +130,7 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && yes | sudo -H rosinstall src /opt/ros/indigo tiago_public.rosinstall \
     && /bin/bash -c "source /home/ros/Workspace/tiago_public_ws/src/setup.bash" \
     && echo "source ~/Workspace/tiago_public_ws/src/setup.bash" >> /home/ros/.bashrc \
-    && sudo rosdep init && rosdep update \
+    && rosdep update \
     && yes | sudo -H rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && chown -R ros:ros /home/ros/Workspace
 
