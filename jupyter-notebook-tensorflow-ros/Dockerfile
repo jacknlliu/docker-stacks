@@ -1,6 +1,6 @@
 FROM jupyter/tensorflow-notebook:latest
 
-MAINTAINER Jack Liu <jacknlliu@gmail.com>
+LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 
 USER root
 

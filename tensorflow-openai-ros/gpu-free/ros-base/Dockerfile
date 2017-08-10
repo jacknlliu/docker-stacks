@@ -1,6 +1,6 @@
 FROM tensorflow/tensorflow:latest-py3
 
-MAINTAINER Jack Liu <jacknlliu@gmail.com>
+LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 
 USER root
 

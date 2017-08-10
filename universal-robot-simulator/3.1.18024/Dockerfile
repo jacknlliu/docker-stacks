@@ -1,6 +1,6 @@
 FROM jacknlliu/ubuntu-init:14.04
 
-MAINTAINER Jack Liu <jacknlliu@gmail.com>
+LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 
 # setup environment
 ENV DEBIAN_FRONTEND noninteractive
