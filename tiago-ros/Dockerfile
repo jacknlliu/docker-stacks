@@ -130,7 +130,9 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && yes | sudo -H rosinstall src /opt/ros/indigo tiago_public.rosinstall \
     && /bin/bash -c "source /home/ros/Workspace/tiago_public_ws/src/setup.bash" \
     && echo "source ~/Workspace/tiago_public_ws/src/setup.bash" >> /home/ros/.bashrc \
-    && rosdep update \
+    && rosdep update
+
+RUN cd /home/ros/Workspace/tiago_public_ws && \
     && yes | sudo -H rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && chown -R ros:ros /home/ros/Workspace
 
