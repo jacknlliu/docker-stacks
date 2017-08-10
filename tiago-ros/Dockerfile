@@ -134,7 +134,7 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && rosdep update
 
 RUN echo "for debug, show $USER home again: $HOME"
-RUN cd /home/ros/Workspace/tiago_public_ws && \
+RUN cd /home/ros/Workspace/tiago_public_ws \
     && yes | sudo -H rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && chown -R ros:ros /home/ros/Workspace
 
