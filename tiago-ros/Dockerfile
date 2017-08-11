@@ -122,7 +122,7 @@ VOLUME ["/home/ros/.gazebo/models"]
 
 
 USER ros
-# install tiago sdk
+# install tiago sdk following http://wiki.ros.org/Robots/TIAGo/Tutorials/Installation/TiagoSimulation
 RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && chmod -R a+rwx /home/ros/Workspace/tiago_public_ws \
     && cd /home/ros/Workspace/tiago_public_ws \
