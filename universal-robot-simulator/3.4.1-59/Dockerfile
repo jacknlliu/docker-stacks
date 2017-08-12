@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM jacknlliu/ubuntu-init:14.04
 
 LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 

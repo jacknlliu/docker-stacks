@@ -65,7 +65,7 @@ RUN chmod a+rwx /ros_entrypoint.sh
 # aptitude clean
 RUN aptitude clean -y -q \
     && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY ./scripts/containerinit.sh  /
 RUN chmod a+rwx /containerinit.sh
@@ -85,8 +85,11 @@ RUN chown -R jovyan:users  /home/jovyan/.config/QtProject/
 # config gazebo volume
 RUN mkdir -p /home/jovyan/.gazebo/models && chown -R jovyan:users /home/jovyan/.gazebo
 
+# add sudo privilege for jovyan
+RUN echo "jovyan ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/notebook-ros
+
 # Configure container startup
-ENTRYPOINT ["tini", "--", "/ros_entrypoint.sh"]
+ENTRYPOINT ["tini", "-v", "--", "/ros_entrypoint.sh"]
 CMD ["start-notebook.sh"]
 
 USER jovyan

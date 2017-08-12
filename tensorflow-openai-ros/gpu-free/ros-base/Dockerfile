@@ -111,8 +111,8 @@ RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:users /home/ros/.gazebo \
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 
-# Configure container startup
-ENTRYPOINT ["tini", "--", "/opt/scripts/container/ros_entrypoint.sh"]
+# Configure container startup, '-v' is needed, please see [using-tini](https://github.com/krallin/tini#using-tini)
+ENTRYPOINT ["tini", "-v", "--", "/opt/scripts/container/ros_entrypoint.sh"]
 CMD ["bash"]
 
 USER ros
