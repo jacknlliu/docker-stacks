@@ -117,6 +117,8 @@ RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:ros /home/ros/.gazebo
 # share this volume with other containers from this image
 VOLUME ["/home/ros/.gazebo/models"]
 
+# install tiago-ros dependencies
+RUN aptitude install -y -q -R ros-indigo-sick-tim ros-indigo-humanoid-nav-msgs ros-indigo-hokuyo-node
 
 USER ros
 # install tiago sdk following http://wiki.ros.org/Robots/TIAGo/Tutorials/Installation/TiagoSimulation
