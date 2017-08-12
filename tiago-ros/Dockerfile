@@ -28,9 +28,6 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc
     && apt-get install -y -q --no-install-recommends apt-utils apt-transport-https aptitude \
     && aptitude install -y -q -R ros-indigo-desktop-full python-rosinstall ninja-build python3-pip python3-setuptools
 
-# install ros python3 supports
-RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install catkin-tools rospkg
-
 # install additional system packages and ros packages
 # update gazebo2.2 to gazebo2.2.5
 RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/gazebo-latest.list \
@@ -131,12 +128,16 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && /bin/bash -c "source /home/ros/Workspace/tiago_public_ws/src/setup.bash" \
     && echo "source ~/Workspace/tiago_public_ws/src/setup.bash" >> /home/ros/.bashrc \
     && rosdep update \
-    && sudo rosdep install --from-paths src --ignore-src --rosdistro indigo --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
+    && sudo rosdep install --from-paths src --ignore-src --rosdistro indigo -y --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && /bin/bash -c "source /opt/ros/indigo/setup.bash" \
     && catkin build \
     && chown -R ros:ros /home/ros/Workspace
 
 USER root
+
+# install ros python3 supports
+RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install catkin-tools rospkg
+
 # aptitude clean
 RUN aptitude clean -y -q \
     && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
