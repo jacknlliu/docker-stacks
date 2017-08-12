@@ -27,7 +27,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
     && rosdep init
 
 # install ros python3 support
-RUN aptitude install -y -q -R libyaml libyaml-dev libyaml-cpp libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg
+RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg
 
 # install additional system packages and ros packages
 # install additional build tool
