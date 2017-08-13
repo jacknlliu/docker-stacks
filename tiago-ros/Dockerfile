@@ -129,13 +129,18 @@ RUN mkdir -p /home/ros/Workspace/tiago_public_ws/src \
     && yes | rosinstall src /opt/ros/indigo tiago_public.rosinstall \
     && /bin/bash -c "source /home/ros/Workspace/tiago_public_ws/src/setup.bash" \
     && echo "source ~/Workspace/tiago_public_ws/src/setup.bash" >> /home/ros/.bashrc \
-    && rosdep update \
+    && rosdep update
+
+# build catkin_ws
+RUN cd /home/ros/Workspace/tiago_public_ws \
+    && catkin init && catkin clean \
+    && catkin config --extend /opt/ros/indigo \
     \
     # add '-r' option to continue installing despite errors: no package [pmb2_2dnav_gazebo]
     && sudo rosdep install --from-paths src --ignore-src --rosdistro indigo -y -r --skip-keys="opencv2 opencv2-nonfree pal_laser_filters speed_limit sensor_to_cloud"  \
     && /bin/bash -c "source /opt/ros/indigo/setup.bash" \
     && catkin build \
-    && chown -R ros:ros /home/ros/Workspace
+    && sudo chown -R ros:ros /home/ros/Workspace
 
 USER root
 
