@@ -85,7 +85,7 @@ RUN adduser --gecos "ROS User" --home /home/ros --disabled-password ros && \
 USER ros
 RUN sudo rosdep init && rosdep update  \
     && echo "source "/opt/ros/$ROS_DISTRO/setup.bash"" >> /home/ros/.bashrc \
-    && echo "export PYTHONPATH=$PYTHONPATH:/opt/tensorflow-models:/opt/tensorflow-models/slim" >> /home/ros/.bashrc
+    && echo 'export PYTHONPATH=$PYTHONPATH:/opt/tensorflow-models:/opt/tensorflow-models/slim' >> /home/ros/.bashrc
 
 # config alias for openai/rllab
 RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
