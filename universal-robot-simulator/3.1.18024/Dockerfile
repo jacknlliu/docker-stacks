@@ -30,7 +30,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-6-openjdk-amd64/jre/bin/java
 RUN aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
     \
 # install amd graphics open source driver
-    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils
+    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils module-init-tools
 
 # set user ros and sudo
 RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
