@@ -55,6 +55,9 @@ RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 
+# update sympy to fix some bugs
+RUN conda update -n root -y sympy
+
 # copy supervisord.conf file
 COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
