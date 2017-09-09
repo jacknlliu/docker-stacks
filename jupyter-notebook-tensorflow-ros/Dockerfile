@@ -55,23 +55,21 @@ RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 
-# update sympy to fix some bugs
-RUN conda update -n root -y sympy
+# copy entrypoint file
+RUN mkdir -p /opt/scripts/container/ && chmod -R a+rx /opt/scripts/
+COPY ./scripts/*.sh /opt/scripts/container/
+RUN chmod a+rwx /opt/scripts/container/*.sh
 
 # copy supervisord.conf file
 COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# copy entrypoint file
-COPY ./scripts/ros_entrypoint.sh /
-RUN chmod a+rwx /ros_entrypoint.sh
+# add extra setup
+RUN /opt/scripts/container/extra_setup.sh && rm -rf /opt/scripts/container/extra_setup.sh
 
 # aptitude clean
 RUN aptitude clean -y -q \
     && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-COPY ./scripts/containerinit.sh  /
-RUN chmod a+rwx /containerinit.sh
 
 # setup ros env
 USER jovyan
@@ -92,7 +90,7 @@ RUN mkdir -p /home/jovyan/.gazebo/models && chown -R jovyan:users /home/jovyan/.
 RUN echo "jovyan ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/notebook-ros
 
 # Configure container startup
-ENTRYPOINT ["tini", "-v", "--", "/ros_entrypoint.sh"]
+ENTRYPOINT ["tini", "-v", "--", "/opt/scripts/container/ros_entrypoint.sh"]
 CMD ["start-notebook.sh"]
 
 USER jovyan
