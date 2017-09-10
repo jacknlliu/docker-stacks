@@ -63,14 +63,6 @@ RUN chmod a+rwx /opt/scripts/container/*.sh
 # copy supervisord.conf file
 COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# add extra setup
-RUN /opt/scripts/container/extra_setup.sh && rm -rf /opt/scripts/container/extra_setup.sh
-
-# aptitude clean
-RUN aptitude clean -y -q \
-    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 # setup ros env
 USER jovyan
 RUN HOME=/home/jovyan rosdep update  \
@@ -88,6 +80,14 @@ RUN mkdir -p /home/jovyan/.gazebo/models && chown -R jovyan:users /home/jovyan/.
 
 # add sudo privilege for jovyan
 RUN echo "jovyan ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/notebook-ros
+
+# add extra setup
+RUN /opt/scripts/container/extra_setup.sh && rm -rf /opt/scripts/container/extra_setup.sh
+
+# aptitude clean
+RUN aptitude clean -y -q \
+    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Configure container startup
 ENTRYPOINT ["tini", "-v", "--", "/opt/scripts/container/ros_entrypoint.sh"]
