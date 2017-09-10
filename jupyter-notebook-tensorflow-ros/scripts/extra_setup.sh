@@ -26,7 +26,9 @@ jupyter nbextension install --py ipyparallel --user
 jupyter nbextension enable --py ipyparallel --user
 
 source /opt/conda/bin/deactivate
-sudo su - root
+
+# for keep environment not use sudo su root
+exit
 
 # clean temp directory
 rm -rf /opt/galgebra
