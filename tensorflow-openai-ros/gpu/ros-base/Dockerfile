@@ -58,9 +58,9 @@ RUN mkdir -p /opt/scripts/container/ && chmod -R a+rx /opt/scripts/ \
     && cd /opt/scripts/container/ && pip3 install git+https://github.com/AlexanderFabisch/gmr.git
 
 # copy entrypoint file
-# install openai/baselines, roboschool, gym related python packages
+# install openai/roboschool, gym related python packages
 COPY ./scripts/*.sh ./config/requirements.txt  /opt/scripts/container/
-RUN chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/requirements.txt && pip3 install --no-cache-dir gym baselines && \
+RUN chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/requirements.txt && pip3 install --no-cache-dir gym && \
     /opt/scripts/container/roboschool_setup.sh
 
 # config sshd
