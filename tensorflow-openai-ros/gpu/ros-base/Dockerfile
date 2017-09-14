@@ -67,7 +67,7 @@ RUN chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/r
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 
 RUN chmod a+rwx /opt/scripts/container/ros_entrypoint.sh /opt/scripts/container/containerinit.sh \
-    /opt/scripts/container/tensorflow-models.sh && /opt/scripts/container/tensorflow-models.sh
+    /opt/scripts/container/tensorflow-models.sh && sync && /opt/scripts/container/tensorflow-models.sh
 
 # aptitude clean and installation scripts clean
 RUN aptitude clean -y -q \
