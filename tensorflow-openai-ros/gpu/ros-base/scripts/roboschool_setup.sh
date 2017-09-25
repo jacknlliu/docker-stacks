@@ -23,6 +23,9 @@ make install && cd /opt && pip3 install --no-cache-dir -e $ROBOSCHOOL_PATH
 
 chmod a+rwx -R /opt/roboschool
 
+# for avoid opengl errors [issue #15](https://github.com/openai/roboschool/issues/15#issuecomment-308620049)
+pip3 install --no-cache-dir pyopengl
+
 # start install openai/rllab
 
 # ========== Special Deps ==========
