@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-gpu-py3
+FROM jacknlliu/tensorflow-openai-ros:origin-gpu-py3
 
 LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 

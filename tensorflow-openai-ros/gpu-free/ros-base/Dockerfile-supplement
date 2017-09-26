@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:latest-py3
+FROM jacknlliu/tensorflow-openai-ros:origin-py3
 
 LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 
