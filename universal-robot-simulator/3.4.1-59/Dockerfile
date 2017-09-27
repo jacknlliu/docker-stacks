@@ -43,7 +43,7 @@ RUN adduser --gecos "URSim User" --home /home/ursim --disabled-password ursim \
 
 # install ursim
 COPY scripts/install_ursim.sh /opt/ursim/
-RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rwx /opt/ursim
+RUN chmod -R a+rx /opt/ursim && sync && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rwx /opt/ursim
 
 COPY scripts/my_init   /sbin/my_init
 COPY scripts/setuser /sbin/setuser
