@@ -11,3 +11,9 @@ RUN apt-get autoclean \
 
 RUN apt-get update -y && apt-get install -f -y --no-install-recommends && \
     apt-get upgrade -y --no-install-recommends
+
+# clean again
+RUN apt-get autoclean \
+    && apt-get clean all \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
