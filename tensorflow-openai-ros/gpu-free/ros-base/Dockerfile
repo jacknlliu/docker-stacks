@@ -71,11 +71,12 @@ RUN chmod a+rwx /opt/scripts/container/ros_entrypoint.sh /opt/scripts/container/
     /opt/scripts/container/tensorflow-models.sh && sync && /opt/scripts/container/tensorflow-models.sh
 
 # aptitude clean and installation scripts clean
-RUN aptitude clean -y -q \
-    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
+RUN apt-get autoclean \
+    && apt-get clean all \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* /var/tmp/* \
     && rm -rf /opt/scripts/container/tensorflow-models.sh /opt/scripts/container/roboschool_setup.sh
-
 
 # set user ros and sudo
 RUN adduser --gecos "ROS User" --home /home/ros --disabled-password ros && \

@@ -149,8 +149,9 @@ USER root
 RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install catkin-tools rospkg
 
 # aptitude clean
-RUN aptitude clean -y -q \
-    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
+RUN apt-get autoclean \
+    && apt-get clean all \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* /var/tmp/*
 

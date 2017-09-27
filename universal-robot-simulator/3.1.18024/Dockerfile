@@ -43,9 +43,11 @@ COPY scripts/install_ursim.sh /opt/ursim/
 RUN chmod -R a+rx /opt/ursim && /opt/ursim/install_ursim.sh "/opt/ursim/"  "ursim"  && rm -f /opt/ursim/install_ursim.sh && chmod -R a+rwx /opt/ursim
 
 # aptitude clean
-RUN aptitude clean -y -q \
-    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get autoclean \
+    && apt-get clean all \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* /var/tmp/*
 
 ENV PATH /opt/ursim/ursimpkg:$PATH
 ENV URSIM_ROOT /opt/ursim/ursimpkg

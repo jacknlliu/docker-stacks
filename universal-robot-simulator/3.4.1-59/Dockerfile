@@ -50,9 +50,11 @@ COPY scripts/setuser /sbin/setuser
 RUN chmod +x /sbin/my_init && chmod +x /sbin/setuser
 
 # aptitude clean
-RUN aptitude clean -y -q \
-    && aptitude -o Aptitude::Delete-Unused=1 install -y -q \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get autoclean \
+    && apt-get clean all \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* /var/tmp/*
 
 ENV PATH /opt/ursim/ursimpkg:$PATH
 ENV URSIM_ROOT /opt/ursim/ursimpkg
