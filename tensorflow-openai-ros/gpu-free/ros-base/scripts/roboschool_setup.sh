@@ -6,8 +6,11 @@ cd /opt/ && git clone https://github.com/openai/rllab.git
 export ROBOSCHOOL_PATH=/opt/roboschool
 
 aptitude install -y -q -R cmake ffmpeg \
-    pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev \
+    pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev \
     libboost-python-dev libtinyxml-dev
+
+# we try to replace libpython3.5-dev by libpython3-dev
+aptitude install -y -q -R libpython3-dev
 
 cd /opt/ && git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
 
