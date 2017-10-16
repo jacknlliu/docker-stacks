@@ -9,5 +9,5 @@ docker run -it  --privileged    \
  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
  --volume="/path/to/gazebo_models:/home/ros/.gazebo/models:rw" \
  --name="tiago-ros" \
- jacknlliu/ros:tiago-ros terminator
+ jacknlliu/tiago-ros:indigo terminator
 ```
