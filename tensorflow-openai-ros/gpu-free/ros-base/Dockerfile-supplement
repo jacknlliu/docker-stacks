@@ -110,7 +110,7 @@ RUN sudo rosdep init && rosdep update  \
     && mkdir -p /home/ros/.local/lib/python2.7/site-packages \
     && echo "/opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages" >> /home/ros/.local/lib/python2.7/site-packages/ros-dev.pth \
     && mkdir -p /home/ros/.local/lib/python3.5/site-packages \
-    && echo -e "/opt/tensorflow-models\n/opt/tensorflow-models/slim" >> /home/ros/.local/lib/python3.5/site-packages/tensorflow-models.pth
+    && echo -e "/opt/tensorflow-models/research\n/opt/tensorflow-models/research/slim" >> /home/ros/.local/lib/python3.5/site-packages/tensorflow-models.pth
 
 # config alias for openai/rllab
 RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
