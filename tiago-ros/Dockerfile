@@ -80,7 +80,7 @@ RUN aptitude install -y -q -R ros-indigo-moveit-full \
 
 # install RoboWare
 RUN aptitude install -y -q -R  wget python-pip pylint clang libxss1 libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
-    && export ROBOWAREVERSION="1.0.0-1505955059"  \
+    && export ROBOWAREVERSION="1.0.1-1509073317"  \
     && wget https://github.com/tonyrobotics/RoboWare/raw/master/Studio/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
     && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
     && apt-get install -y --no-install-recommends -f \
@@ -147,6 +147,9 @@ USER root
 
 # install ros python3 supports
 RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install catkin-tools rospkg
+
+# install catkin-tools dependencies
+RUN pip3 install trollius && pip2 install trollius
 
 # aptitude clean
 RUN apt-get autoclean \

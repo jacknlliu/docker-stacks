@@ -12,6 +12,9 @@ aptitude install -y -q -R cmake ffmpeg \
 # we try to replace libpython3.5-dev by libpython3-dev
 aptitude install -y -q -R libpython3-dev
 
+# for avoid opengl errors [issue #15](https://github.com/openai/roboschool/issues/15#issuecomment-308620049)
+pip3 install -U --no-cache-dir pyopengl
+
 cd /opt/ && git clone https://github.com/olegklimov/bullet3 -b roboschool_self_collision
 
 mkdir bullet3/build && cd bullet3/build
@@ -25,9 +28,6 @@ make -j4
 make install && cd /opt && pip3 install --no-cache-dir -e $ROBOSCHOOL_PATH
 
 chmod a+rwx -R /opt/roboschool
-
-# for avoid opengl errors [issue #15](https://github.com/openai/roboschool/issues/15#issuecomment-308620049)
-pip3 install --no-cache-dir pyopengl
 
 # start install openai/rllab
 
@@ -59,7 +59,7 @@ aptitude install -y -q -R libav-tools
 pip3 install --no-cache-dir -r /opt/scripts/container/requirements.txt
 
 # fix pytorch not spport for this python
-pip3 install http://download.pytorch.org/whl/cu75/torch-0.1.12.post2-cp35-cp35m-linux_x86_64.whl
+pip3 install http://download.pytorch.org/whl/cu80/torch-0.1.12.post2-cp35-cp35m-linux_x86_64.whl
 pip3 install --no-cache-dir torchvision
 
 chmod a+rwx -R  /opt/rllab

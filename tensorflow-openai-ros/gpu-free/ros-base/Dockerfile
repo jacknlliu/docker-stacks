@@ -45,7 +45,7 @@ RUN aptitude install -y -q -R build-essential gdb tmux \
 
 # install RoboWare
 RUN aptitude install -y -q -R  wget python-pip pylint clang libxss1 libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
-    && export ROBOWAREVERSION="1.0.0-1505955059"  \
+    && export ROBOWAREVERSION="1.0.1-1509073317"  \
     && wget https://github.com/tonyrobotics/RoboWare/raw/master/Studio/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
     && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
     && apt-get install -y --no-install-recommends -f \
@@ -89,7 +89,7 @@ RUN sudo rosdep init && rosdep update  \
     && mkdir -p /home/ros/.local/lib/python2.7/site-packages \
     && echo "/opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages" >> /home/ros/.local/lib/python2.7/site-packages/ros-dev.pth \
     && mkdir -p /home/ros/.local/lib/python3.5/site-packages \
-    && echo -e "/opt/tensorflow-models\n/opt/tensorflow-models/slim" >> /home/ros/.local/lib/python3.5/site-packages/tensorflow-models.pth
+    && echo -e "/opt/tensorflow-models/research\n/opt/tensorflow-models/research/slim" >> /home/ros/.local/lib/python3.5/site-packages/tensorflow-models.pth
 
 # config alias for openai/rllab
 RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
