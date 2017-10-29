@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER Jack Liu <jacknlliu@gmail.com>
+LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 
 COPY . /bd_build
 
