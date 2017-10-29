@@ -23,9 +23,9 @@ source /opt/conda/bin/deactivate
 su - $JUPYTER_USER_NAME
 source /opt/conda/bin/activate root
 
-jupyter serverextension enable --py ipyparallel --user $JUPYTER_USER_NAME
-jupyter nbextension install --py ipyparallel --user $JUPYTER_USER_NAME
-jupyter nbextension enable --py ipyparallel --user $JUPYTER_USER_NAME
+jupyter serverextension enable --py ipyparallel --user
+jupyter nbextension install --py ipyparallel --user
+jupyter nbextension enable --py ipyparallel --user
 
 source /opt/conda/bin/deactivate
 
