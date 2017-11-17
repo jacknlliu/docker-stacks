@@ -85,6 +85,9 @@ RUN echo "jovyan ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/notebook-ros
 # add extra setup
 RUN /opt/scripts/container/extra_setup.sh && rm -rf /opt/scripts/container/extra_setup.sh
 
+# keep home privilege
+RUN chown -R jovyan:users /home/jovyan/
+
 # aptitude clean
 RUN apt-get autoclean \
     && apt-get clean all \
