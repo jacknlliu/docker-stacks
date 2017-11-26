@@ -20,17 +20,12 @@ source /opt/conda/bin/deactivate
 
 
 # set jupyter enable ipyparallel, refer to https://github.com/ipython/ipyparallel/issues/170
-su - $JUPYTER_USER_NAME
-source /opt/conda/bin/activate root
-
-jupyter serverextension enable --py ipyparallel --user
-jupyter nbextension install --py ipyparallel --user
-jupyter nbextension enable --py ipyparallel --user
-
-source /opt/conda/bin/deactivate
-
-# for keep environment not use sudo su root
-exit
+su - $JUPYTER_USER_NAME -c "source /opt/conda/bin/activate root; \
+ jupyter serverextension enable --py ipyparallel --user; \
+ jupyter nbextension install --py ipyparallel --user; \
+ jupyter nbextension enable --py ipyparallel --user; \
+ source /opt/conda/bin/deactivate
+"
 
 # clean temp directory
 rm -rf /opt/galgebra
