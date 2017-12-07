@@ -63,3 +63,9 @@ pip3 install http://download.pytorch.org/whl/cu80/torch-0.1.12.post2-cp35-cp35m-
 pip3 install --no-cache-dir torchvision
 
 chmod a+rwx -R  /opt/rllab
+
+
+# install baselines with tensorflow-gpu
+cd /opt/ &&  git clone https://github.com/jacknlliu/baselines.git
+cd baselines && python3 setup.py sdist && pip3 install dist/*.tar.gz
+rm -rf /opt/baselines
