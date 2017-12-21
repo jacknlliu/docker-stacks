@@ -66,7 +66,7 @@ chmod a+rwx -R  /opt/rllab
 
 
 # install baselines with tensorflow-gpu
-cd /opt/ &&  git clone https://github.com/jacknlliu/baselines.git
-cd baselines && git checkout non-gpu && python3 setup.py sdist && pip3 install dist/*.tar.gz
+cd /opt/ &&  git clone https://github.com/openai/baselines.git
+cd baselines && python3 setup.py sdist && pip3 install dist/*.tar.gz
 
 cd / && rm -rf /opt/baselines
