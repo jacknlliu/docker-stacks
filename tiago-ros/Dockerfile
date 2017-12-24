@@ -147,7 +147,7 @@ RUN cd /home/ros/Workspace/tiago_public_ws \
 USER root
 
 # install ros python3 supports
-RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip ws4py
+RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip ws4py transforms3d
 
 # install catkin-tools dependencies
 RUN pip2 install trollius
