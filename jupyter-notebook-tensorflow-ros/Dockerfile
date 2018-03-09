@@ -30,7 +30,10 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
     && rosdep init
 
 # install ros python3 support
-RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d
+RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius
+
+# install dependecies for ros genmsg
+RUN pip install empy
 
 # install additional system packages and ros packages
 # install additional build tool
@@ -47,7 +50,7 @@ RUN aptitude install -y -q -R build-essential gdb tmux \
 
 # install RoboWare
 RUN aptitude install -y -q -R  wget python-pip pylint clang libxss1 libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
-    && export ROBOWAREVERSION="1.0.2-1512004582"  \
+    && export ROBOWAREVERSION="1.1.0-1514335284"  \
     && wget https://github.com/tonyrobotics/RoboWare/raw/master/Studio/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
     && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
     && apt-get install -y --no-install-recommends -f \
@@ -66,6 +69,9 @@ RUN chmod a+rwx /opt/scripts/container/*.sh
 
 # copy supervisord.conf file
 COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# add jupyter notebook tools
+RUN pip3 install nbmerge nbdime
 
 # setup ros env
 USER jovyan

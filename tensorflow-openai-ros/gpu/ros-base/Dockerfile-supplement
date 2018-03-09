@@ -12,7 +12,7 @@ RUN apt-get update -y && apt-get install -f -y --no-install-recommends && apt-ge
 ENV LANG en_US.UTF-8
 
 # define tini version
-ENV TINI_VERSION v0.15.0
+ENV TINI_VERSION v0.17.0
 
 # define ros distribution version
 ENV ROS_DISTRO kinetic
@@ -31,7 +31,10 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
    ros-kinetic-rosbridge-server ros-kinetic-rosbridge-suite
 
 # install ros python3 support
-RUN pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d
+RUN pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius
+
+# install dependecies for ros genmsg
+RUN pip install empy
 
 # install additional system packages and ros packages
 # install additional build tool
@@ -48,7 +51,7 @@ RUN aptitude install -y -q -R build-essential gdb tmux \
 
 # install RoboWare
 RUN aptitude install -y -q -R  wget python-pip pylint clang libxss1 libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
-    && export ROBOWAREVERSION="1.0.2-1512004582"  \
+    && export ROBOWAREVERSION="1.1.0-1514335284"  \
     && wget https://github.com/tonyrobotics/RoboWare/raw/master/Studio/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
     && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
     && apt-get install -y --no-install-recommends -f \
@@ -94,6 +97,9 @@ RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 RUN chmod a+rwx /opt/scripts/container/ros_entrypoint.sh /opt/scripts/container/containerinit.sh \
     /opt/scripts/container/tensorflow-models.sh && sync && /opt/scripts/container/tensorflow-models.sh
 
+# add jupyter notebook tools
+RUN pip3 install nbmerge nbdime
+
 # aptitude clean and installation scripts clean
 RUN apt-get autoclean \
     && apt-get clean all \
@@ -115,7 +121,7 @@ RUN sudo rosdep init && rosdep update  \
     && mkdir -p /home/ros/.local/lib/python3.5/site-packages \
     && echo -e "/opt/tensorflow-models/research\n/opt/tensorflow-models/research/slim" >> /home/ros/.local/lib/python3.5/site-packages/tensorflow-models.pth
 
-# config alias for openai/rllab
+# config alias for openai/rllab, install libav-tools firstly
 RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
 
 # configure Qt
@@ -124,9 +130,6 @@ RUN mkdir -p /home/ros/.config/QtProject
 USER root
 COPY ./config/QtCreator.ini  /home/ros/.config/QtProject/
 RUN chown -R ros:users  /home/ros/.config/QtProject/
-
-# config env for openai/rllab
-ENV THEANO_FLAGS mode=FAST_RUN,device=cpu,floatX=float32
 
 # config gazebo volume
 RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:users /home/ros/.gazebo \
