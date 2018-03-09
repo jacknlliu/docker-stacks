@@ -11,7 +11,7 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
 # install tiago dependencies
-RUN  apt-get update -y && apt-get upgrade -y -q --no-install-recommends -o Dpkg::Options::="--force-confold" \
+RUN  apt-get update -y && apt-get upgrade -y -q --no-install-recommends \
     && apt-get install -y -q --no-install-recommends software-properties-common \
     && add-apt-repository --yes ppa:xqms/opencv-nonfree  \
     && apt-get update -y -q \
@@ -80,7 +80,7 @@ RUN aptitude install -y -q -R ros-indigo-moveit-full \
 
 # install RoboWare
 RUN aptitude install -y -q -R  wget python-pip pylint clang libxss1 libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
-    && export ROBOWAREVERSION="1.0.2-1512004582"  \
+    && export ROBOWAREVERSION="1.1.0-1514335284"  \
     && wget https://github.com/tonyrobotics/RoboWare/raw/master/Studio/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
     && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
     && apt-get install -y --no-install-recommends -f \
