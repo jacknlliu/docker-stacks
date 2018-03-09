@@ -26,7 +26,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
    \
 # update the repository and install ros kinetic
    && aptitude update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build python3-pip python3-setuptools \
-   python3-defusedxml \
+   python3-defusedxml python3-dev \
    ros-kinetic-gazebo-msgs ros-kinetic-rosbridge-library \
    ros-kinetic-rosbridge-server ros-kinetic-rosbridge-suite
 
