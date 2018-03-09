@@ -21,3 +21,6 @@ docker run -it --security-opt label=disable --security-opt seccomp=unconfined \
     --name "jupyter-tensorflow" \
     jacknlliu/tensorflow-openai-ros:kinetic  bash
 ```
+
+# Reference
+- [tensorflow docker](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/tools/docker)
