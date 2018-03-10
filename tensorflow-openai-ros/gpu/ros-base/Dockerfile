@@ -65,10 +65,7 @@ RUN mkdir -p /opt/scripts/container/ && chmod -R a+rx /opt/scripts/ \
     && cd /opt/scripts/container/ && pip3 install git+https://github.com/AlexanderFabisch/gmr.git
 
 # copy entrypoint file
-# install openai/baselines, roboschool, gym related python packages
 COPY ./scripts/*.sh ./config/requirements.txt  /opt/scripts/container/
-RUN chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/requirements.txt && pip3 install --no-cache-dir gym && \
-    /opt/scripts/container/roboschool_setup.sh
 
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
@@ -78,14 +75,6 @@ RUN chmod a+rwx /opt/scripts/container/ros_entrypoint.sh /opt/scripts/container/
 
 # add jupyter notebook tools
 RUN pip3 install nbmerge nbdime
-
-# aptitude clean and installation scripts clean
-RUN apt-get autoclean \
-    && apt-get clean all \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/* /var/tmp/* \
-    && rm -rf /opt/scripts/container/tensorflow-models.sh /opt/scripts/container/roboschool_setup.sh
 
 # set user ros and sudo
 RUN adduser --gecos "ROS User" --home /home/ros --disabled-password ros && \
@@ -100,6 +89,11 @@ RUN sudo rosdep init && rosdep update  \
     && mkdir -p /home/ros/.local/lib/python3.5/site-packages \
     && echo -e "/opt/tensorflow-models/research\n/opt/tensorflow-models/research/slim" >> /home/ros/.local/lib/python3.5/site-packages/tensorflow-models.pth
 
+
+# install openai/baselines, roboschool, gym related python packages
+RUN sudo chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/requirements.txt && sudo pip3 install --no-cache-dir gym && \
+    sudo /opt/scripts/container/roboschool_setup.sh
+
 # config alias for openai/rllab, install libav-tools firstly
 RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
 
@@ -107,6 +101,15 @@ RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
 RUN mkdir -p /home/ros/.config/QtProject
 
 USER root
+
+# aptitude clean and installation scripts clean
+RUN apt-get autoclean \
+    && apt-get clean all \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* /var/tmp/* \
+    && rm -rf /opt/scripts/container/tensorflow-models.sh /opt/scripts/container/roboschool_setup.sh
+
 COPY ./config/QtCreator.ini  /home/ros/.config/QtProject/
 RUN chown -R ros:users  /home/ros/.config/QtProject/
 

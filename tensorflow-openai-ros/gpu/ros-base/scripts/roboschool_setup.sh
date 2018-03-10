@@ -64,6 +64,15 @@ pip3 install --no-cache-dir torchvision
 
 chmod a+rwx -R  /opt/rllab
 
+# install mujoco-py before baselines
+mkdir -p ~/.mujoco \
+    && wget https://www.roboti.us/download/mjpro150_linux.zip -O mujoco.zip \
+    && unzip mujoco.zip -d ~/.mujoco \
+    && rm mujoco.zip
+
+export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH
+
+echo 'export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH' >> ~/.bashrc
 
 # install baselines with tensorflow-gpu
 cd /opt/ &&  git clone https://github.com/openai/baselines.git
