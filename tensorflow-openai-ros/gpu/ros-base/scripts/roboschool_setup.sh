@@ -65,6 +65,8 @@ pip3 install --no-cache-dir torchvision
 chmod a+rwx -R  /opt/rllab
 
 # install mujoco-py before baselines
+aptitude install -y -q -R libosmesa6-dev
+
 mkdir -p ~/.mujoco \
     && wget https://www.roboti.us/download/mjpro150_linux.zip -O mujoco.zip \
     && unzip mujoco.zip -d ~/.mujoco \
