@@ -72,7 +72,7 @@ RUN aptitude install -y -q -R ros-kinetic-controller-manager \
     ros-kinetic-moveit \
     \
 # install Barret_Hand related components
-    && aptitude install -y -q -R libignition-math2-dev libignition-common-dev  \
+    && aptitude install -y -q -R libignition-math2-dev \
     \
 # install kinematics module
     && aptitude install -y -q -R ros-kinetic-calibration-estimation ros-kinetic-kdl-parser-py  \
