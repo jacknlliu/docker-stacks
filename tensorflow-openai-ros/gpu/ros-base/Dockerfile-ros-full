@@ -31,9 +31,9 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
    ros-kinetic-rosbridge-server ros-kinetic-rosbridge-suite
 
 # install ros python3 support
-RUN pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius
+RUN pip3 install --upgrade pip virtualenv && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius
 
-# install dependecies for ros genmsg
+# install dependecies for ros genmsg using pip2
 RUN pip install empy
 
 # install additional system packages and ros packages
@@ -112,11 +112,8 @@ RUN sudo rosdep init && rosdep update  \
 
 
 # install openai/baselines, roboschool, gym related python packages
-RUN sudo chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/requirements.txt && sudo pip3 install --no-cache-dir gym && \
+RUN sudo chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/container/requirements.txt && \
     sudo /opt/scripts/container/roboschool_setup.sh
-
-# config alias for openai/rllab, install libav-tools firstly
-RUN echo "alias ffmpeg="avconv"" >> /home/ros/.bashrc
 
 # configure Qt
 RUN mkdir -p /home/ros/.config/QtProject

@@ -1,8 +1,44 @@
 #!/bin/bash
-cd /opt/ && git clone https://github.com/openai/roboschool.git
-cd /opt/ && git clone https://github.com/openai/rllab.git
+
+# install mujoco-py(incomplete because of license) before gym, baselines
+aptitude install -y -q -R libosmesa6-dev
+
+mkdir -p ~/.mujoco \
+    && wget https://www.roboti.us/download/mjpro150_linux.zip -O mujoco.zip \
+    && unzip mujoco.zip -d ~/.mujoco \
+    && rm mujoco.zip
+
+export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH
+
+echo 'export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH' >> ~/.bashrc
+
+
+# install gym
+echo "start to install openai/gym"
+
+aptitude install -y -q -R libgtk2.0-0 libav-tools
+# config alias for openai/rllab, install libav-tools firstly
+echo "alias ffmpeg=\"avconv\"" >> /home/ros/.bashrc
+
+aptitude install -y -q -R swig
+pip3 install --no-cache-dir pyglet gym['atari','box2d','classic_control']
+
+echo "install openai/gym complete!"
+
+
+# install baselines with tensorflow-gpu
+echo "start to install openai/baselines"
+cd /opt/ &&  git clone https://github.com/openai/baselines.git
+cd baselines && python3 setup.py sdist && pip3 install dist/*.tar.gz
+cd / && rm -rf /opt/baselines
+echo "install openai/baselines complete!"
+
 
 # start install openai/roboschool
+echo "start to install openai/roboschool"
+
+cd /opt/ && git clone https://github.com/openai/roboschool.git
+
 export ROBOSCHOOL_PATH=/opt/roboschool
 
 aptitude install -y -q -R cmake ffmpeg \
@@ -29,33 +65,16 @@ make install && cd /opt && pip3 install --no-cache-dir -e $ROBOSCHOOL_PATH
 
 chmod a+rwx -R /opt/roboschool
 
-# start install openai/rllab
+echo "install openai/roboschool complete!"
 
-# ========== Special Deps ==========
-aptitude install -y -q -R git make cmake unzip
-pip3 install --no-cache-dir awscli
-# ALE requires zlib
-aptitude install -y -q -R zlib1g-dev
-# MUJOCO requires graphics stuff (Why?)
-apt-get -y build-dep glfw
-aptitude install -y -q -R libxrandr2 libxinerama-dev libxi6 libxcursor-dev
-# copied from requirements.txt
-#  pip install imageio tabulate nose
-aptitude install -y -q -R vim ack-grep
-pip3 install --upgrade pip
-# usual pip install pygame will fail
-apt-get build-dep -y python-pygame
-pip3 install --no-cache-dir Pillow
 
-# ========== OpenAI Gym ==========
-aptitude install -y -q -R libgtk2.0-0
-pip3 install gym
-#  apt-get -y install ffmpeg
-aptitude install -y -q -R libav-tools
-# set alias in /home/ros/.bashrc
-# alias ffmpeg="avconv"
+# start install openai/rllab (without mujoco_py, not following the exact version of python pacakge)
+echo "start to install openai/rllab"
 
-# install rllab dependencies
+cd /opt/ && git clone https://github.com/openai/rllab.git
+
+aptitude install -y -q -R python3-dev swig cmake build-essential zlib1g-dev python3-dateutil
+
 pip3 install --no-cache-dir -r /opt/scripts/container/requirements.txt
 
 # fix pytorch not spport for this python
@@ -64,19 +83,5 @@ pip3 install --no-cache-dir torchvision
 
 chmod a+rwx -R  /opt/rllab
 
-# install mujoco-py before baselines
-aptitude install -y -q -R libosmesa6-dev
-
-mkdir -p ~/.mujoco \
-    && wget https://www.roboti.us/download/mjpro150_linux.zip -O mujoco.zip \
-    && unzip mujoco.zip -d ~/.mujoco \
-    && rm mujoco.zip
-
-export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH
-
-echo 'export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH' >> ~/.bashrc
-
-# install baselines with tensorflow-gpu
-cd /opt/ &&  git clone https://github.com/openai/baselines.git
-cd baselines && python3 setup.py sdist && pip3 install dist/*.tar.gz
-cd / && rm -rf /opt/baselines
+echo "install openai/roboschool complete!"
+echo "You should add rllab path to your PYTHONPATH environment variable."

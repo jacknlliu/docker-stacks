@@ -1,5 +1,4 @@
 path.py
-python-dateutil
 joblib
 mako
 ipywidgets
@@ -11,6 +10,7 @@ h5py
 matplotlib
 opencv-python
 scikit-learn
+pytorch
 mpi4py
 pandas
 Pillow
@@ -29,14 +29,11 @@ cloudpickle
 Cython
 redis
 keras
-Theano
 Lasagne
 plotly
 awscli
-gym
 pyglet
 prettytensor
-jupyter
 progressbar2
 chainer
 numpy-stl
