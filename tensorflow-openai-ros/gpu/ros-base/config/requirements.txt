@@ -10,7 +10,6 @@ h5py
 matplotlib
 opencv-python
 scikit-learn
-pytorch
 mpi4py
 pandas
 Pillow

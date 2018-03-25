@@ -68,7 +68,8 @@ chmod a+rwx -R /opt/roboschool
 echo "install openai/roboschool complete!"
 
 
-# start install openai/rllab (without mujoco_py, not following the exact version of python pacakge)
+# start install openai/rllab 
+# (without mujoco_py, not following the exact version of python pacakge, and opencv3)
 echo "start to install openai/rllab"
 
 cd /opt/ && git clone https://github.com/openai/rllab.git
