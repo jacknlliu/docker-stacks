@@ -85,7 +85,7 @@ RUN mkdir -p /opt/scripts/container/ && chmod -R a+rx /opt/scripts/ \
     && cd /opt/scripts/container/ && pip3 install git+https://github.com/AlexanderFabisch/gmr.git
 
 # copy entrypoint file
-COPY ./scripts/*.sh ./config/requirements.txt  /opt/scripts/container/
+COPY ./scripts/*.sh ./config/requirements*.txt  /opt/scripts/container/
 
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
@@ -111,7 +111,7 @@ RUN sudo rosdep init && rosdep update  \
 
 
 # install openai/baselines, roboschool, gym related python packages
-RUN sudo chmod +x /opt/scripts/container/dart_drl.sh /opt/scripts/container/requirements.txt && \
+RUN sudo chmod +x /opt/scripts/container/dart_drl.sh /opt/scripts/container/requirements*.txt && \
     sudo /opt/scripts/container/dart_drl.sh
 
 # configure Qt

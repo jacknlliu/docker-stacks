@@ -1,6 +1,11 @@
 #!/bin/bash
 
 # install mujoco-py(incomplete because of license) before gym, baselines
+# Actually not install mujoco_py!
+# TODO: a better way is install a empty package named `mujoco_py`,
+# then we can only install `mujoco_py` if we need it, 
+# other packages which depend on it can be installed correctly.
+echo "======== start to install mujoco-py ========"
 aptitude install -y -q -R libosmesa6-dev
 
 mkdir -p ~/.mujoco \
@@ -12,9 +17,11 @@ export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH
 
 echo 'export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin:$LD_LIBRARY_PATH' >> ~/.bashrc
 
+echo "======== install mujoco-py complete! ========"
+
 
 # install gym
-echo "start to install openai/gym"
+echo "======== start to install openai/gym ========"
 
 aptitude install -y -q -R libgtk2.0-0 libav-tools
 # config alias for openai/rllab, install libav-tools firstly
@@ -23,18 +30,19 @@ echo "alias ffmpeg=\"avconv\"" >> /home/ros/.bashrc
 aptitude install -y -q -R swig
 pip3 install --no-cache-dir pyglet gym['atari','box2d','classic_control']
 
-echo "install openai/gym complete!"
+echo "======== install openai/gym complete! ========"
 
 
 # install baselines with tensorflow-gpu
-echo "start to install openai/baselines"
+echo "======== start to install openai/baselines ========"
 cd /opt/ &&  git clone https://github.com/openai/baselines.git
-cd baselines && python3 setup.py sdist && pip3 install dist/*.tar.gz
-cd / && rm -rf /opt/baselines
-echo "install openai/baselines complete!"
+cd baselines && pip3 install -r /opt/scripts/container/requirements_baselines.txt
+pip3 install --no-deps -e .
+echo "======== install openai/baselines complete! ========"
 
 
 # install dart
+echo "======== start to install dart ========"
 apt-add-repository -y ppa:dartsim/ppa
 apt-get update -y
 aptitude install -y -q -R libdart6-all-dev swig python3-pyqt5 python3-pyqt5.qtopengl
@@ -46,10 +54,11 @@ cd /opt; mkdir -p /opt/dart_sim/ && cd /opt/dart_sim
 git clone https://github.com/DartEnv/dart-env
 cd dart-env
 pip3 install -e .[dart]
+echo "======== install dart complete! ========"
 
 
 # start install openai/roboschool
-echo "start to install openai/roboschool"
+echo "======== start to install openai/roboschool ========"
 
 cd /opt/ && git clone https://github.com/openai/roboschool.git
 
@@ -79,18 +88,18 @@ make install && cd /opt && pip3 install --no-cache-dir -e $ROBOSCHOOL_PATH
 
 chmod a+rwx -R /opt/roboschool
 
-echo "install openai/roboschool complete!"
+echo "======== install openai/roboschool complete! ========"
 
 
 # start install openai/rllab 
 # (without mujoco_py, not following the exact version of python pacakge, and opencv3)
-echo "start to install openai/rllab"
+echo "======== start to install openai/rllab ========"
 
 cd /opt/ && git clone https://github.com/openai/rllab.git
 
 aptitude install -y -q -R python3-dev swig cmake build-essential zlib1g-dev python3-dateutil
 
-pip3 install --no-cache-dir -r /opt/scripts/container/requirements.txt
+pip3 install --no-cache-dir -r /opt/scripts/container/requirements_rllab.txt
 
 # fix pytorch not spport for this python
 pip3 install http://download.pytorch.org/whl/cu80/torch-0.1.12.post2-cp35-cp35m-linux_x86_64.whl
@@ -98,5 +107,5 @@ pip3 install --no-cache-dir torchvision
 
 chmod a+rwx -R  /opt/rllab
 
-echo "install openai/roboschool complete!"
+echo "======== install openai/roboschool complete! ========"
 echo "You should add rllab path to your PYTHONPATH environment variable."

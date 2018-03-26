@@ -1,0 +1,12 @@
+gym[atari,classic_control]
+scipy
+tqdm
+joblib
+zmq
+dill
+progressbar2
+mpi4py
+cloudpickle
+tensorflow>=1.4.0
+click
+
