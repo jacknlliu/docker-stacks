@@ -6,7 +6,7 @@
 # then we can only install `mujoco_py` if we need it, 
 # other packages which depend on it can be installed correctly.
 echo "======== start to install mujoco-py ========"
-aptitude install -y -q -R libosmesa6-dev
+apt install -y -q --no-install-recommends libosmesa6-dev
 
 mkdir -p ~/.mujoco \
     && wget https://www.roboti.us/download/mjpro150_linux.zip -O mujoco.zip \
@@ -23,11 +23,11 @@ echo "======== install mujoco-py complete! ========"
 # install gym
 echo "======== start to install openai/gym ========"
 
-aptitude install -y -q -R libgtk2.0-0 libav-tools
+apt install -y -q --no-install-recommends libgtk2.0-0 libav-tools ffmpeg
 # config alias for openai/rllab, install libav-tools firstly
-echo "alias ffmpeg=\"avconv\"" >> /home/ros/.bashrc
+# echo "alias ffmpeg=\"avconv\"" >> /home/ros/.bashrc
 
-aptitude install -y -q -R swig
+apt install -y -q --no-install-recommends swig
 pip3 install --no-cache-dir pyglet gym['atari','box2d','classic_control']
 
 echo "======== install openai/gym complete! ========"
@@ -45,7 +45,7 @@ echo "======== install openai/baselines complete! ========"
 echo "======== start to install dart ========"
 apt-add-repository -y ppa:dartsim/ppa
 apt-get update -y
-aptitude install -y -q -R libdart6-all-dev swig python3-pyqt5 python3-pyqt5.qtopengl
+apt install -y -q --no-install-recommends libdart6-all-dev swig python3-pyqt5 python3-pyqt5.qtopengl
 
 pip3 install numpy PyOpenGL PyOpenGL_accelerate pydart2
 
@@ -64,12 +64,12 @@ cd /opt/ && git clone https://github.com/openai/roboschool.git
 
 export ROBOSCHOOL_PATH=/opt/roboschool
 
-aptitude install -y -q -R cmake ffmpeg \
+apt install -y -q --no-install-recommends cmake ffmpeg \
     pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev \
     libboost-python-dev libtinyxml-dev
 
 # we try to replace libpython3.5-dev by libpython3-dev
-aptitude install -y -q -R libpython3-dev
+apt install -y -q --no-install-recommends libpython3-dev
 
 # for avoid opengl errors [issue #15](https://github.com/openai/roboschool/issues/15#issuecomment-308620049)
 pip3 install -U --no-cache-dir pyopengl
@@ -97,7 +97,7 @@ echo "======== start to install openai/rllab ========"
 
 cd /opt/ && git clone https://github.com/openai/rllab.git
 
-aptitude install -y -q -R python3-dev swig cmake build-essential zlib1g-dev python3-dateutil
+apt install -y -q --no-install-recommends python3-dev swig cmake build-essential zlib1g-dev python3-dateutil
 
 pip3 install --no-cache-dir -r /opt/scripts/container/requirements_rllab.txt
 

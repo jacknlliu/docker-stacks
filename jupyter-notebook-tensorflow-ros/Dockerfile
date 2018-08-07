@@ -7,7 +7,7 @@ USER root
 # setup environment
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update -y && apt-get install -y -q --no-install-recommends gnupg gnupg2 apt-transport-https aptitude locales && locale-gen en_US.UTF-8
+RUN apt-get update -y && apt-get install -y -q --no-install-recommends gnupg gnupg2 apt-transport-https locales && locale-gen en_US.UTF-8
 
 ENV LANG en_US.UTF-8
 
@@ -21,43 +21,50 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
     && apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116  \
     \
 # update the repository and install ros kinetic
-    && aptitude update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build python3-pip python3-setuptools\
+    && apt update -y -q && apt install -y -q --no-install-recommends ros-kinetic-ros-base python-rosinstall ninja-build python3-pip python3-setuptools\
     python3-defusedxml \
     ros-kinetic-gazebo-msgs ros-kinetic-rosbridge-library \
     ros-kinetic-rosbridge-server ros-kinetic-rosbridge-suite \
+    ros-kinetic-tf2-web-republisher \
+    ros-kinetic-tf2-relay ros-kinetic-tf2-geometry-msgs ros-kinetic-tf2-sensor-msgs \
     \
 # rosdep init
     && rosdep init
 
 # install ros python3 support
-RUN aptitude install -y -q -R python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev && pip3 install --upgrade pip && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius
+RUN apt install -y -q --no-install-recommends python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev \
+     && pip3 install --upgrade pip \
+     && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius \
+     \
+     # install roslibpy for ROS Bridge
+    && pip3 install roslibpy; pip2 install roslibpy
 
-# install dependecies for ros genmsg
+# install dependecies for ros genmsg using pip2
 RUN pip install empy
 
 # install additional system packages and ros packages
 # install additional build tool
-RUN aptitude install -y -q -R build-essential gdb tmux \
+RUN apt install -y -q --no-install-recommends build-essential gdb tmux \
     \
 # install IDE essential packages and qt5, qtcreator, qtdeclarative5-qtquick2
-    && aptitude install -y -q -R mesa-common-dev libglu1-mesa-dev libfontconfig1 qt5-default qtcreator qtdeclarative5-qtquick2-plugin \
+    && apt install -y -q --no-install-recommends mesa-common-dev libglu1-mesa-dev libfontconfig1 qt5-default qtcreator qtdeclarative5-qtquick2-plugin \
     \
 # install intel graphics driver
-    && aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
+    && apt install -y -q --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri \
     \
 # install amd graphics open source driver
-    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils module-init-tools
+    && apt install -y -q --no-install-recommends mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils module-init-tools
 
 # install RoboWare
-RUN aptitude install -y -q -R  wget python-pip pylint clang libxss1 libnss3 libnotify4 libxtst6 ~nlibgconf-2 \
-    && export ROBOWAREVERSION="1.1.0-1514335284"  \
+RUN apt install -y -q --no-install-recommends wget python-pip pylint clang libxss1 libxtst6 \
+    && export ROBOWAREVERSION="1.2.0-1524709819"  \
     && wget https://github.com/tonyrobotics/RoboWare/raw/master/Studio/roboware-studio_${ROBOWAREVERSION}_amd64.deb -O roboware_amd64.deb \
-    && chmod a+x roboware_amd64.deb && dpkg -i roboware_amd64.deb \
-    && apt-get install -y --no-install-recommends -f \
+    && chmod a+x roboware_amd64.deb && apt install -y -q --no-install-recommends ./roboware_amd64.deb \
+    && apt install -y -q --no-install-recommends -f \
     && rm -f roboware_amd64.deb
 
 # install essential tools, ssh sever, sudo
-RUN aptitude update -y -q && aptitude install -y -q -R  bash-completion wget vim git iputils-ping iproute2 netcat terminator supervisor xauth openssh-server sudo pcmanfm
+RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completion wget vim git iputils-ping iproute2 netcat terminator supervisor xauth openssh-server sudo pcmanfm
 
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
@@ -71,7 +78,10 @@ RUN chmod a+rwx /opt/scripts/container/*.sh
 COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # add jupyter notebook tools
-RUN pip3 install nbmerge nbdime
+RUN pip3 install nbmerge nbdime \
+    && apt install -y -q --no-install-recommends python3-tk
+
+RUN pip3 install pendulum; pip2 install pendulum numpy
 
 # setup ros env
 USER jovyan
@@ -97,10 +107,10 @@ RUN /opt/scripts/container/extra_setup.sh && rm -rf /opt/scripts/container/extra
 # keep home privilege
 RUN chown -R jovyan:users /home/jovyan/
 
-# aptitude clean
-RUN apt-get autoclean \
-    && apt-get clean all \
-    && apt-get autoremove -y \
+# apt clean
+RUN apt autoclean \
+    && apt clean all \
+    && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* /var/tmp/*
 

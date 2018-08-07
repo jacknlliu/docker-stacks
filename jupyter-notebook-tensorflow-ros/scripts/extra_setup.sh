@@ -11,7 +11,7 @@ cd /opt/galgebra
 
 source /opt/conda/bin/activate root
 
-python setup.py sdist && pip install dist/*.tar.gz
+pip install -e .
 
 # install ipyparallel
 pip install ipyparallel keras
