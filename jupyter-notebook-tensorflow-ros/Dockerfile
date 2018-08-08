@@ -32,8 +32,9 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
     && rosdep init
 
 # install ros python3 support
-RUN apt install -y -q --no-install-recommends python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5 libyaml-cpp-dev \
+RUN apt install -y -q --no-install-recommends python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5v5 libyaml-cpp-dev python3-setuptools python-setuptools \
      && pip3 install --upgrade pip \
+     && pip2 install --upgrade pip \
      && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius \
      \
      # install roslibpy for ROS Bridge
