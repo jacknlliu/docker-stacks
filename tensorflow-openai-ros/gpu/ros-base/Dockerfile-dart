@@ -75,6 +75,9 @@ RUN apt install -y -q --no-install-recommends ros-kinetic-controller-manager \
     ros-kinetic-orocos-kinematics-dynamics \
     ros-kinetic-pid  \
     \
+    # install orocos rtt components
+    && apt install -y -q --no-install-recommends ros-kinetic-rtt ros-kinetic-rtt-* \
+    \
 # install Barret_Hand related components
     && apt install -y -q --no-install-recommends libignition-math2-dev \
     \
