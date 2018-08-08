@@ -1,4 +1,4 @@
-FROM jupyter/tensorflow-notebook:latest
+FROM jupyter/tensorflow-notebook:2bfbb7d17524
 
 LABEL maintainer="Jack Liu <jacknlliu@gmail.com>"
 
