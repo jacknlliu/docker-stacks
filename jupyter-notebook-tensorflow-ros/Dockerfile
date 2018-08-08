@@ -45,15 +45,15 @@ RUN pip install empy
 # install additional system packages and ros packages
 # install additional build tool
 RUN apt install -y -q --no-install-recommends build-essential gdb tmux \
-    \
+    doxygen doxygen-gui \
 # install IDE essential packages and qt5, qtcreator, qtdeclarative5-qtquick2
-    && apt install -y -q --no-install-recommends mesa-common-dev libglu1-mesa-dev libfontconfig1 qt5-default qtcreator qtdeclarative5-qtquick2-plugin \
+    && aptitude install -y -q -R mesa-common-dev libglu1-mesa-dev libfontconfig1 qt5-default qtcreator qtdeclarative5-qtquick2-plugin \
     \
 # install intel graphics driver
-    && apt install -y -q --no-install-recommends libgl1-mesa-glx libgl1-mesa-dri \
+    && aptitude install -y -q -R libgl1-mesa-glx libgl1-mesa-dri \
     \
 # install amd graphics open source driver
-    && apt install -y -q --no-install-recommends mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils module-init-tools
+    && aptitude install -y -q -R mesa-vdpau-drivers xserver-xorg-video-ati mesa-utils module-init-tools
 
 # install RoboWare
 RUN apt install -y -q --no-install-recommends wget python-pip pylint clang libxss1 libxtst6 \
