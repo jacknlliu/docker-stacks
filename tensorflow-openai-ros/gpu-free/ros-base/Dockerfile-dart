@@ -44,7 +44,7 @@ RUN pip install empy
 # install additional system packages and ros packages
 # install additional build tool
 RUN apt install -y -q --no-install-recommends build-essential gdb tmux \
-    \
+    doxygen doxygen-gui \
 # install IDE essential packages and qt5, qtcreator, qtdeclarative5-qtquick2
     && apt install -y -q --no-install-recommends mesa-common-dev libglu1-mesa-dev libfontconfig1 qt5-default qtcreator qtdeclarative5-qtquick2-plugin \
     \
