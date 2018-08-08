@@ -18,7 +18,7 @@ ENV ROS_DISTRO kinetic
 RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list  \
     \
 # setup keys
-    && apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116  \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116  \
     \
 # update the repository and install ros kinetic
     && apt update -y -q && apt install -y -q --no-install-recommends ros-kinetic-ros-base python-rosinstall ninja-build python3-pip python3-setuptools\
