@@ -21,7 +21,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
     && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116  \
     \
 # update the repository and install ros kinetic
-    && apt update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build python3-pip python3-setuptools\
+    && apt update -y -q && aptitude install -y -q -R ros-kinetic-ros-base python-rosinstall ninja-build python3-pip python-pip python3-setuptools python-setuptools \
     python3-defusedxml \
     ros-kinetic-gazebo-msgs ros-kinetic-rosbridge-library \
     ros-kinetic-rosbridge-server ros-kinetic-rosbridge-suite \
@@ -32,13 +32,13 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
     && rosdep init
 
 # install ros python3 support
-RUN apt install -y -q --no-install-recommends python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5v5 libyaml-cpp-dev python3-setuptools python-setuptools \
+RUN apt install -y -q --no-install-recommends python3-dev libyaml-0-2 libyaml-dev libyaml-cpp0.5v5 libyaml-cpp-dev \
      && pip3 install --upgrade pip \
      && pip2 install --upgrade pip \
      && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius \
      \
      # install roslibpy for ROS Bridge
-    && pip3 install roslibpy; pip2 install roslibpy
+    && pip3 install roslibpy; pip2 install roslibpy empy
 
 # install dependecies for ros genmsg using pip2
 RUN pip install empy
