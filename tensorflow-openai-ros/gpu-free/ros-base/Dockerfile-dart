@@ -33,10 +33,10 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources
     ros-kinetic-tf2-relay ros-kinetic-tf2-geometry-msgs ros-kinetic-tf2-sensor-msgs
 
 # install ros python3 support
-RUN pip3 install --upgrade pip virtualenv && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius \
+RUN pip3 install --upgrade pip setuptools virtualenv && pip3 install --no-cache-dir catkin-tools rospkg ws4py transforms3d trollius \
      \
      # install roslibpy for ROS Bridge
-    && pip3 install roslibpy; pip2 install roslibpy
+    && pip3 install roslibpy; pip2 install --upgrade pip setuptools; pip2 install roslibpy empy
 
 # install dependecies for ros genmsg using pip2
 RUN pip install empy
