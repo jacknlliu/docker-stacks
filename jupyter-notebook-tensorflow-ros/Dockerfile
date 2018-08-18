@@ -65,7 +65,9 @@ RUN apt install -y -q --no-install-recommends wget python-pip pylint clang libxs
     && rm -f roboware_amd64.deb
 
 # install essential tools, ssh sever, sudo
-RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completion wget vim git iputils-ping iproute2 netcat terminator supervisor xauth openssh-server sudo pcmanfm
+RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completion \
+    wget vim git iputils-ping iproute2 netcat terminator supervisor xauth openssh-server sudo pcmanfm \
+    tree ranger curl ca-certificates openssl
 
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
@@ -82,7 +84,7 @@ COPY ./config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN pip3 install nbmerge nbdime \
     && apt install -y -q --no-install-recommends python3-tk
 
-RUN pip3 install pendulum; pip2 install pendulum numpy
+RUN pip3 install pendulum pyquaternion tldr.py; pip2 install pandas scipy pendulum numpy pyquaternion
 
 # setup ros env
 USER jovyan
@@ -91,6 +93,12 @@ RUN HOME=/home/jovyan rosdep update  \
 
 # configure Qt
 RUN mkdir -p /home/jovyan/.config/QtProject
+
+# install urdf-rviz
+RUN cd $HOME && curl https://sh.rustup.rs -sSf > rustup.sh && chmod a+x rustup.sh \
+    && ./rustup.sh -y && rm -f ./rustup.sh \
+    && echo "source $HOME/.cargo/env" >> $HOME/.bashrc \
+    && source $HOME/.cargo/env && cargo install -f urdf-viz
 
 USER root
 COPY ./config/QtCreator.ini  /home/jovyan/.config/QtProject/

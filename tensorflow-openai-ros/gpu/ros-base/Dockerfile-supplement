@@ -7,7 +7,7 @@ USER root
 # setup environment
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update -y && apt-get install -f -y --no-install-recommends && apt-get install -y -q --no-install-recommends apt-transport-https locales && locale-gen en_US.UTF-8
+RUN apt-get update -y && apt-get install -f -y --no-install-recommends && apt-get install -y -q --no-install-recommends apt-transport-https aptitude locales && locale-gen en_US.UTF-8
 
 ENV LANG en_US.UTF-8
 
@@ -16,7 +16,6 @@ ENV TINI_VERSION v0.17.0
 
 # define ros distribution version
 ENV ROS_DISTRO kinetic
-
 
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list  \
@@ -63,7 +62,9 @@ RUN apt install -y -q --no-install-recommends wget python-pip pylint clang libxs
     && rm -f roboware_amd64.deb
 
 # install essential tools, ssh sever, sudo
-RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completion wget vim git iputils-ping iproute2 netcat terminator xauth openssh-server sudo pcmanfm
+RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completion \
+    wget vim git iputils-ping iproute2 netcat terminator xauth openssh-server sudo pcmanfm \
+    tree ranger curl ca-certificates openssl
 
 
 # install ros related components
@@ -106,20 +107,21 @@ RUN chmod a+rwx /opt/scripts/container/ros_entrypoint.sh /opt/scripts/container/
 RUN pip3 install nbmerge nbdime \
     && apt install -y -q --no-install-recommends python3-tk
 
-RUN pip3 install pendulum; pip2 install pendulum numpy
+RUN pip3 install pandas scipy pendulum pyquaternion tldr.py; pip2 install pandas scipy pendulum numpy pyquaternion
 
 # set user ros and sudo
-RUN adduser --gecos "ROS User" --home /home/ros --disabled-password ros && \
-    usermod -a -G dialout ros && \
-    echo "ros ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99_aptget
+ENV DOCKER_USER ros
+RUN adduser --gecos "ROS User" --home /home/$DOCKER_USER --disabled-password $DOCKER_USER && \
+    usermod -a -G dialout $DOCKER_USER && \
+    echo "$DOCKER_USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/99_aptget
 
 # setup ros env
-USER ros
+USER $DOCKER_USER
 RUN sudo rosdep init && rosdep update  \
-    && mkdir -p /home/ros/.local/lib/python2.7/site-packages \
-    && echo "/opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages" >> /home/ros/.local/lib/python2.7/site-packages/ros-dev.pth \
-    && mkdir -p /home/ros/.local/lib/python3.5/site-packages \
-    && echo -e "/opt/tensorflow-models/research\n/opt/tensorflow-models/research/slim" >> /home/ros/.local/lib/python3.5/site-packages/tensorflow-models.pth
+    && mkdir -p /home/$DOCKER_USER/.local/lib/python2.7/site-packages \
+    && echo "/opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages" >> /home/$DOCKER_USER/.local/lib/python2.7/site-packages/ros-dev.pth \
+    && mkdir -p /home/$DOCKER_USER/.local/lib/python3.5/site-packages \
+    && echo -e "/opt/tensorflow-models/research\n/opt/tensorflow-models/research/slim" >> /home/$DOCKER_USER/.local/lib/python3.5/site-packages/tensorflow-models.pth
 
 
 # install openai/baselines, roboschool, gym related python packages
@@ -127,7 +129,13 @@ RUN sudo chmod +x /opt/scripts/container/roboschool_setup.sh /opt/scripts/contai
     sudo /opt/scripts/container/roboschool_setup.sh
 
 # configure Qt
-RUN mkdir -p /home/ros/.config/QtProject
+RUN mkdir -p /home/$DOCKER_USER/.config/QtProject
+
+# install urdf-rviz
+RUN cd $HOME && curl https://sh.rustup.rs -sSf > rustup.sh && chmod a+x rustup.sh \
+    && ./rustup.sh -y && rm -f ./rustup.sh \
+    && echo "source $HOME/.cargo/env" >> $HOME/.bashrc \
+    && source $HOME/.cargo/env && cargo install -f urdf-viz
 
 USER root
 
@@ -139,15 +147,15 @@ RUN apt autoclean \
     && rm -rf /tmp/* /var/tmp/* \
     && rm -rf /opt/scripts/container/tensorflow-models.sh /opt/scripts/container/roboschool_setup.sh
 
-COPY ./config/QtCreator.ini  /home/ros/.config/QtProject/
-RUN chown -R ros:users  /home/ros/.config/QtProject/
+COPY ./config/QtCreator.ini  /home/$DOCKER_USER/.config/QtProject/
+RUN chown -R $DOCKER_USER:users  /home/$DOCKER_USER/.config/QtProject/
 
 # config gazebo volume
-RUN mkdir -p /home/ros/.gazebo/models && chown -R ros:users /home/ros/.gazebo \
-    && mkdir /home/ros/.jupyter \
-    && cp -f /root/.jupyter/jupyter_notebook_config.py /home/ros/.jupyter/ \
-    && chown -R ros:users /home/ros/.jupyter \
-    && chmod 755 /home/ros/.jupyter/jupyter_notebook_config.py
+RUN mkdir -p /home/$DOCKER_USER/.gazebo/models && chown -R $DOCKER_USER:users /home/$DOCKER_USER/.gazebo \
+    && mkdir /home/$DOCKER_USER/.jupyter \
+    && cp -f /root/.jupyter/jupyter_notebook_config.py /home/$DOCKER_USER/.jupyter/ \
+    && chown -R $DOCKER_USER:users /home/$DOCKER_USER/.jupyter \
+    && chmod 755 /home/$DOCKER_USER/.jupyter/jupyter_notebook_config.py
 
 # Add Tini
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
@@ -157,5 +165,5 @@ RUN chmod +x /usr/bin/tini
 ENTRYPOINT ["tini", "-v", "--", "/opt/scripts/container/ros_entrypoint.sh"]
 CMD ["bash"]
 
-USER ros
-WORKDIR /home/ros
+USER $DOCKER_USER
+WORKDIR /home/$DOCKER_USER
