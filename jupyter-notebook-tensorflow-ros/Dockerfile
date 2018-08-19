@@ -98,7 +98,7 @@ RUN mkdir -p /home/jovyan/.config/QtProject
 RUN cd $HOME && curl https://sh.rustup.rs -sSf > rustup.sh && chmod a+x rustup.sh \
     && ./rustup.sh -y && rm -f ./rustup.sh \
     && echo "source $HOME/.cargo/env" >> $HOME/.bashrc \
-    && source $HOME/.cargo/env && cargo install -f urdf-viz
+    && /bin/bash -c "source $HOME/.cargo/env && cargo install -f urdf-viz"
 
 USER root
 COPY ./config/QtCreator.ini  /home/jovyan/.config/QtProject/

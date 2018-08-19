@@ -111,7 +111,7 @@ RUN mkdir -p /home/$DOCKER_USER/.config/QtProject
 RUN cd $HOME && curl https://sh.rustup.rs -sSf > rustup.sh && chmod a+x rustup.sh \
     && ./rustup.sh -y && rm -f ./rustup.sh \
     && echo "source $HOME/.cargo/env" >> $HOME/.bashrc \
-    && source $HOME/.cargo/env && cargo install -f urdf-viz
+    && /bin/bash -c "source $HOME/.cargo/env && cargo install -f urdf-viz"
 
 USER root
 
