@@ -66,6 +66,9 @@ RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completi
     wget vim git iputils-ping iproute2 netcat terminator xauth openssh-server sudo pcmanfm \
     tree ranger curl ca-certificates openssl
 
+# install system dependencies for urdf-viz
+RUN apt install -y -q --no-install-recommends cmake xorg-dev libglu1-mesa-dev
+
 # install machine learning packages
 RUN mkdir -p /opt/scripts/container/ && chmod -R a+rx /opt/scripts/ \
     && cd /opt/scripts/container/ && pip3 install git+https://github.com/AlexanderFabisch/gmr.git

@@ -69,6 +69,9 @@ RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completi
     wget vim git iputils-ping iproute2 netcat terminator supervisor xauth openssh-server sudo pcmanfm \
     tree ranger curl ca-certificates openssl
 
+# install system dependencies for urdf-viz
+RUN apt install -y -q --no-install-recommends cmake xorg-dev libglu1-mesa-dev
+
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 

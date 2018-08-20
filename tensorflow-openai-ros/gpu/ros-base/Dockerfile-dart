@@ -87,6 +87,8 @@ RUN apt install -y -q --no-install-recommends ros-kinetic-controller-manager \
 # install fast inverse kinematics module
     && apt install -y -q --no-install-recommends  ros-kinetic-trac-ik-lib
 
+# install system dependencies for urdf-viz
+RUN apt install -y -q --no-install-recommends cmake xorg-dev libglu1-mesa-dev
 
 # install machine learning packages
 RUN mkdir -p /opt/scripts/container/ && chmod -R a+rx /opt/scripts/ \
