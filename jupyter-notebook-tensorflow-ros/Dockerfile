@@ -70,7 +70,7 @@ RUN apt update -y -q && apt install -y -q --no-install-recommends  bash-completi
     tree ranger curl ca-certificates openssl
 
 # install system dependencies for urdf-viz
-RUN apt install -y -q --no-install-recommends cmake xorg-dev libglu1-mesa-dev
+# RUN apt install -y -q --no-install-recommends cmake xorg-dev libglu1-mesa-dev
 
 # config sshd
 RUN mkdir -p /var/run/sshd && echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
@@ -98,10 +98,10 @@ RUN HOME=/home/jovyan rosdep update  \
 RUN mkdir -p /home/jovyan/.config/QtProject
 
 # install urdf-rviz
-RUN cd $HOME && curl https://sh.rustup.rs -sSf > rustup.sh && chmod a+x rustup.sh \
-    && ./rustup.sh -y && rm -f ./rustup.sh \
-    && echo "source $HOME/.cargo/env" >> $HOME/.bashrc \
-    && /bin/bash -c "source $HOME/.cargo/env && cargo install -f urdf-viz"
+# RUN cd $HOME && curl https://sh.rustup.rs -sSf > rustup.sh && chmod a+x rustup.sh \
+#     && ./rustup.sh -y && rm -f ./rustup.sh \
+#     && echo "source $HOME/.cargo/env" >> $HOME/.bashrc \
+#     && /bin/bash -c "source $HOME/.cargo/env && cargo install -f urdf-viz"
 
 USER root
 COPY ./config/QtCreator.ini  /home/jovyan/.config/QtProject/
