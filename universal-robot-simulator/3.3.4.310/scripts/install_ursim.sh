@@ -1,7 +1,7 @@
 #! /bin/bash
 set -e \
     && export UR_DOWNLOAD_SITE="https://s3-eu-west-1.amazonaws.com/ur-support-site/26265/ursim-3.3.4.310.tar.gz" \
-    && export URSIMVERSION="3.3.4.310"  \
+    && export URSIMVERSION="3.3.4"  \
     && export INSTALL_DIR=$1  \
     && export URSIM_USER=$2  \
     && echo "INSTALL_DIR: $INSTALL_DIR \n URSIM_USER: $URSIM_USER" \
